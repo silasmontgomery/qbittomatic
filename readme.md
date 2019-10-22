@@ -1,5 +1,5 @@
 # qBittomatic
-### A web application for finding, managing, and moving torrents.
+### A web application for finding and managing torrents.
 
 ## Security Vulnerabilities
 

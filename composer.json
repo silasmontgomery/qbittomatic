@@ -1,7 +1,7 @@
 {
     "name": "silasmontgomery/qbittomatic",
-    "description": "A web application to search, manage, and move torrents.",
-    "keywords": ["framework", "laravel", "lumen", "vue", "qbittorrent"],
+    "description": "A web application for finding and managing torrents.",
+    "keywords": ["framework", "laravel", "lumen", "vue", "qbittorrent", "torrents"],
     "license": "MIT",
     "type": "project",
     "require": {
