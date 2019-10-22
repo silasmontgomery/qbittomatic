@@ -1907,25 +1907,26 @@ __webpack_require__.r(__webpack_exports__);
       activeSortDesc: false,
       activeTorrents: [],
       activeFields: [{
-        key: 'name',
-        //label: '',
-        sortable: true
+        key: 'name' //label: ''
+
       }, {
         key: 'state',
-        label: 'Status',
-        sortable: true
+        label: 'Status'
       }, {
-        key: 'size',
-        //label: '',
-        sortable: true
+        key: 'size' //label: '',
+
       }, {
         key: 'download_percent',
-        label: '% Complete',
-        sortable: true
+        label: '% Complete'
       }, {
-        key: 'share_ratio',
-        //label: '',
-        sortable: true
+        key: 'download_speed',
+        label: 'DL Speed'
+      }, {
+        key: 'upload_speed',
+        label: 'UL Speed'
+      }, {
+        key: 'share_ratio' //label: '',
+
       }],
       searchResults: [],
       errors: []

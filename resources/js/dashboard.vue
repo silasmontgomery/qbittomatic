@@ -47,28 +47,31 @@ export default {
       activeFields: [
         {
           key: 'name',
-          //label: '',
-          sortable: true,
+          //label: ''
         },
         {
           key: 'state',
-          label: 'Status',
-          sortable: true,
+          label: 'Status'
         },
         {
           key: 'size',
           //label: '',
-          sortable: true,
         },
         {
           key: 'download_percent',
           label: '% Complete',
-          sortable: true,
+        },
+        {
+          key: 'download_speed',
+          label: 'DL Speed',
+        },
+        {
+          key: 'upload_speed',
+          label: 'UL Speed',
         },
         {
           key: 'share_ratio',
           //label: '',
-          sortable: true,
         },
       ],
       searchResults: [],
