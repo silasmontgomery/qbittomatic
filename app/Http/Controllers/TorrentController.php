@@ -34,22 +34,6 @@ class TorrentController extends Controller
      */
     public function index()
     {
-        return $this->api->torrentList();
-        /*
-        return response()->json([
-            [
-                'name' => 'File 1',
-                'status' => 'Downloading'
-            ],
-            [
-                'name' => 'File 2',
-                'status' => 'Downloading'
-            ],
-            [
-                'name' => 'File 3',
-                'status' => 'Completed'
-            ],
-        ]);
-        */
+        return response()->json(json_decode($this->api->torrentList(), true));
     }
 }
