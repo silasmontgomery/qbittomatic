@@ -1870,49 +1870,113 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      torrents: [],
+      activePerPage: 5,
+      activeCurrentPage: 1,
+      activeSortBy: 'name',
+      activeSortDesc: false,
+      activeTorrents: [],
+      activeFields: [{
+        key: 'name',
+        //label: '',
+        sortable: true
+      }, {
+        key: 'state',
+        label: 'Status',
+        sortable: true
+      }, {
+        key: 'size',
+        //label: '',
+        sortable: true
+      }, {
+        key: 'download_percent',
+        label: '% Complete',
+        sortable: true
+      }, {
+        key: 'share_ratio',
+        //label: '',
+        sortable: true
+      }],
+      searchResults: [],
       errors: []
     };
   },
   mounted: function mounted() {
     var _this = this;
 
+    this.fetchActive();
     window.setInterval(function (f) {
-      _this.fetchList();
+      _this.fetchActive();
     }, 1000);
   },
-  computed: {
-    computedTorrents: function computedTorrents() {
+  computed: {},
+  methods: {
+    fetchActive: function fetchActive() {
       var _this2 = this;
 
-      var torrents = [];
-      this.torrents.forEach(function (t) {
-        torrents.push({
-          name: t.name,
-          status: t.state,
-          downloaded: _this2.smartSize(t.completed) + '/' + _this2.smartSize(t.total_size) + ' (' + (t.completed / t.total_size * 100).toFixed(1) + '%)',
-          down_speed: _this2.smartSize(t.dlspeed) + '/s',
-          uploaded: _this2.smartSize(t.uploaded) + '/' + _this2.smartSize(t.total_size) + ' (' + (t.uploaded / t.total_size * 100).toFixed(1) + '%)',
-          up_speed: _this2.smartSize(t.upspeed) + '/s',
-          seeds: t.num_seeds + ' (' + t.num_complete + ')',
-          leechs: t.num_leechs + ' (' + t.num_incomplete + ')'
-        });
-      });
-      return torrents;
-    }
-  },
-  methods: {
-    fetchList: function fetchList() {
-      var _this3 = this;
-
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/torrent_list').then(function (response) {
-        _this3.torrents = response.data;
+        var torrents = [];
+        response.data.forEach(function (t) {
+          torrents.push({
+            name: t.name,
+            size: _this2.smartSize(t.total_size),
+            state: t.state,
+            download_total: _this2.smartSize(t.completed) + '/' + _this2.smartSize(t.total_size),
+            download_percent: (t.completed / t.total_size * 100).toFixed(1) + '%',
+            download_speed: _this2.smartSize(t.dlspeed) + '/s',
+            upload_total: _this2.smartSize(t.uploaded) + '/' + _this2.smartSize(t.total_size),
+            upload_percent: (t.uploaded / t.total_size * 100).toFixed(1) + '%',
+            upload_speed: _this2.smartSize(t.upspeed) + '/s',
+            share_ratio: t.ratio.toFixed(2),
+            seeds: t.num_seeds + ' (' + t.num_complete + ')',
+            leechs: t.num_leechs + ' (' + t.num_incomplete + ')',
+            _showDetails: _this2.activeTorrents.find(function (o) {
+              return o.name == t.name && o.size == _this2.smartSize(t.total_size) && o._showDetails == true;
+            }) ? true : false
+          });
+        });
+        _this2.activeTorrents = torrents;
       })["catch"](function (e) {
-        _this3.errors.push(e);
+        _this2.errors.push(e);
+      });
+    },
+    onRowClicked: function onRowClicked(item, index, event) {
+      this.activeTorrents.forEach(function (torrent, i) {
+        if (i == index && !torrent._showDetails) {
+          torrent._showDetails = true;
+        } else {
+          torrent._showDetails = false;
+        }
       });
     },
     smartSize: function smartSize(byteSize) {
@@ -34540,14 +34604,64 @@ var render = function() {
     [
       _c(
         "b-card",
-        { attrs: { header: "Active Torrents" } },
+        { staticClass: "mt-3", attrs: { header: "Active Torrents" } },
         [
           _c("b-table", {
+            ref: "activeTable",
             attrs: {
+              small: "",
               striped: "",
               hover: "",
               responsive: "",
-              items: _vm.computedTorrents
+              id: "activeTable",
+              currentPage: _vm.activeCurrentPage,
+              perPage: _vm.activePerPage,
+              fields: _vm.activeFields,
+              items: _vm.activeTorrents
+            },
+            on: { "row-clicked": _vm.onRowClicked },
+            scopedSlots: _vm._u([
+              {
+                key: "row-details",
+                fn: function(row) {
+                  return [_c("b-card")]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _vm.activePerPage < _vm.activeTorrents.length
+            ? _c("b-pagination", {
+                attrs: {
+                  "total-rows": _vm.activeTorrents.length,
+                  "per-page": _vm.activePerPage,
+                  "aria-controls": "activeTable"
+                },
+                model: {
+                  value: _vm.activeCurrentPage,
+                  callback: function($$v) {
+                    _vm.activeCurrentPage = $$v
+                  },
+                  expression: "activeCurrentPage"
+                }
+              })
+            : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-card",
+        { staticClass: "mt-3", attrs: { header: "Torrent Search" } },
+        [
+          _c("b-table", {
+            attrs: {
+              small: "",
+              striped: "",
+              hover: "",
+              responsive: "",
+              id: "search-table",
+              items: _vm.searchResults
             }
           })
         ],
@@ -49587,22 +49701,10 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(portal_vue__WEBPACK_IMPORTED_MODULE_3___default.a);
-var Foo = {
-  template: '<div>Foo!</div>'
-};
-var Bar = {
-  template: '<div>Bar!</div>'
-};
 
 var routes = [{
   path: '/',
   component: _dashboard_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
-}, {
-  path: '/foo',
-  component: Foo
-}, {
-  path: '/bar',
-  component: Bar
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
