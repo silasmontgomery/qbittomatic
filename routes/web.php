@@ -11,6 +11,19 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+// API Routes
+$router->group(['prefix' => 'api'], function ($router) {
+    $router->group(['prefix' => 'v1'], function ($router) {
+        $router->get('/torrent_list', 'TorrentController@index');
+        $router->get('/key', function () {
+            $bytes = random_bytes(16);
+            return bin2hex($bytes);
+        });
+        //$router->get('/second-example', 'ExampleController@showAnother');
+    });
+});
+
+// Catch all other requests and route to Vue
+$router->get('/{route:.*}/', function () {
+    return view('app');
 });
