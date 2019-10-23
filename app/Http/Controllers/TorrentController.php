@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
 use silasmontgomery\QBittorrentWebApi\Api;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Http\Resources\TorrentResource;
 
 class TorrentController extends Controller
 {
@@ -30,10 +31,44 @@ class TorrentController extends Controller
     /**
      * Return a list of torrents from qBittorrent API
      *
-     * @return json
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return response()->json(json_decode($this->api->torrentList(), true));
+        $torrent_list = json_decode($this->api->torrentList());
+        $torrents = array_map(function ($torrent) {
+            return [
+                'name' => $torrent->name,
+                'state' => $torrent->state,
+                'hash' => $torrent->hash,
+                'size' => $torrent->total_size,
+                'downloaded' => $torrent->completed,
+                'completed' => ($torrent->completed / $torrent->total_size) * 100,
+                'ratio' => $torrent->ratio,
+                'dl_speed' => $torrent->dlspeed,
+                'up_speed' => $torrent->upspeed,
+                'path' => $torrent->file_path
+            ];
+        }, $torrent_list);
+        
+
+        return response()->json($torrents);
+    }
+
+    /**
+     * Return the list of torrent paths from .env
+     *
+     * @return JsonResponse
+     */
+    public function paths(): JsonResponse
+    {
+        $paths = explode(',', env('TORRENT_PATHS'));
+        $paths_arr = [];
+        foreach ($paths as $path) {
+            list($k, $v) = explode('=', $path);
+            $paths_arr[] = ['name' => $k, 'path' => $v];
+        }
+
+        return response()->json($paths_arr);
     }
 }

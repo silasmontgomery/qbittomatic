@@ -1,36 +1,42 @@
 <template>
-  <b-container fluid>
-    <b-card class="mt-3" header="Active Torrents">
-      <b-table small striped hover responsive
-        ref="activeTable"
-        id="activeTable"
-        :currentPage=activeCurrentPage 
-        :perPage=activePerPage 
-        :fields="activeFields"
-        :items="activeTorrents"
-        @row-clicked="onRowClicked">
-        <template v-slot:row-details="row">
-          <b-card>
-            
-
-          </b-card>
-        </template>
-      </b-table>
-      <b-pagination 
-        v-if="activePerPage < activeTorrents.length" 
-        v-model="activeCurrentPage" 
-        :total-rows="activeTorrents.length" 
-        :per-page="activePerPage" 
-        aria-controls="activeTable">
-      </b-pagination>
-    </b-card>
-    <b-card class="mt-3" header="Torrent Search">
-      <b-table small striped hover responsive 
-        id="search-table"
-        :items="searchResults">
-      </b-table>
-    </b-card>
-  </b-container>
+  <div>
+      <div class="card">
+        <div class="responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Size</th>
+                <th>% Complete</th>
+                <th>DL Speed</th>
+                <th>UL Speed</th>
+                <th>Share Ratio</th>
+              </tr>
+            </thead>
+            <tbody ref="torrentTable">
+              <template v-for="torrent in torrents">
+                <tr class="selectable" @click="onTorrentClick(torrent)" :key="torrent.hash + 'A'">
+                  <td>{{ torrent.name }}</td>
+                  <td>{{ torrent.state }}</td>
+                  <td>{{ smartSize(torrent.total_size) }}</td>
+                  <td>{{ ((torrent.completed / torrent.total_size)*100).toFixed(2) }}%</td>
+                  <td>{{ smartSize(torrent.dlspeed) }}/s</td>
+                  <td>{{ smartSize(torrent.upspeed) }}/s</td>
+                  <td>{{ torrent.ratio.toFixed(2) }}</td>
+                </tr>
+                <tr :ref="torrent.hash" class="torrent-details hidden" :key="torrent.hash + 'B'">
+                  <td colspan="7">Details</td>
+                </tr>
+              </template>
+              <tr v-if="torrents.length == 0">
+                <td colspan="7">No active torrents</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </div>
 </template>
 
 <script>
@@ -39,84 +45,39 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
-      activePerPage: 5,
-      activeCurrentPage: 1,
-      activeSortBy: 'name',
-      activeSortDesc: false,
-      activeTorrents: [],
-      activeFields: [
-        {
-          key: 'name'
-        },
-        {
-          key: 'state',
-          label: 'Status'
-        },
-        {
-          key: 'size'
-        },
-        {
-          key: 'download_percent',
-          label: '% Complete',
-        },
-        {
-          key: 'download_speed',
-          label: 'DL Speed',
-        },
-        {
-          key: 'upload_speed',
-          label: 'UL Speed',
-        },
-        {
-          key: 'share_ratio'
-        },
-      ],
-      searchResults: [],
+      torrents: [],
+      paths: [],
       errors: []
     }
   },
   mounted() {
-    this.fetchActive();
-    window.setInterval(f => { this.fetchActive() }, 1000);
+    this.fetchTorrents();
+    this.fetchPaths();
+    window.setInterval(f => { this.fetchTorrents() }, 1000);
   },
   computed: {
   },
   methods: {
-    fetchActive: function() {
+    fetchTorrents: function() {
       axios.get('/api/v1/torrent_list')
       .then(response => {
-        let torrents = [];
-        response.data.forEach(t => {
-          torrents.push({ 
-            name: t.name, 
-            size: this.smartSize(t.total_size),
-            state: t.state, 
-            download_total: this.smartSize(t.completed) + '/' + this.smartSize(t.total_size),
-            download_percent: ((t.completed / t.total_size) * 100).toFixed(1) + '%', 
-            download_speed: this.smartSize(t.dlspeed) + '/s', 
-            upload_total: this.smartSize(t.uploaded) + '/' + this.smartSize(t.total_size),
-            upload_percent: ((t.uploaded / t.total_size) * 100).toFixed(1) + '%',
-            upload_speed: this.smartSize(t.upspeed) + '/s',
-            share_ratio: t.ratio.toFixed(2),
-            seeds: t.num_seeds + ' (' + t.num_complete + ')',
-            leechs: t.num_leechs + ' (' + t.num_incomplete + ')',
-            _showDetails: this.activeTorrents.find(o => o.name == t.name && o.size == this.smartSize(t.total_size) && o._showDetails == true) ? true:false,
-          });
-        });
-        this.activeTorrents = torrents;
+        this.torrents = response.data;
       })
       .catch(e => {
         this.errors.push(e)
       })
     },
-    onRowClicked: function(item, index, event) {
-      this.activeTorrents.forEach((torrent, i) => {
-        if(i == index && !torrent._showDetails) {
-            torrent._showDetails = true;
-        } else {
-          torrent._showDetails = false;
-        }
-      });
+    fetchPaths: function() {
+      axios.get('/api/v1/torrent_paths')
+      .then(response => {
+        this.torrentPaths = response.data;
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
+    },
+    onTorrentClick: function(torrent) {
+      this.$refs[torrent.hash][0].classList.toggle("hidden");
     },
     smartSize: function(byteSize) {
       let smartSize = 0;
@@ -134,9 +95,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-h1 {
-  font-size: 1.5em;
-}
-</style>
