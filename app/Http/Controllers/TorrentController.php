@@ -35,8 +35,10 @@ class TorrentController extends Controller
      */
     public function index(): JsonResponse
     {
+        $paths = json_decode($this->paths());
+
         $torrent_list = json_decode($this->api->torrentList());
-        $torrents = array_map(function ($torrent) {
+        $torrents = array_map(function ($torrent) use ($paths) {
             return [
                 'name' => $torrent->name,
                 'state' => $torrent->state,
@@ -47,12 +49,13 @@ class TorrentController extends Controller
                 'ratio' => $torrent->ratio,
                 'dl_speed' => $torrent->dlspeed,
                 'up_speed' => $torrent->upspeed,
-                'path' => $torrent->file_path
+                'path' => array_search($torrent->save_path, $paths)
             ];
         }, $torrent_list);
         
 
         return response()->json($torrents);
+        //return response()->json($torrent_list);
     }
 
     /**

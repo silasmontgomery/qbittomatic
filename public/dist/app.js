@@ -2475,27 +2475,24 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(torrent.state))]),
                       _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.total_size)))
-                      ]),
+                      _c("td", [_vm._v(_vm._s(_vm.smartSize(torrent.size)))]),
                       _vm._v(" "),
                       _c("td", [
                         _vm._v(
                           _vm._s(
-                            (
-                              (torrent.completed / torrent.total_size) *
-                              100
-                            ).toFixed(2)
+                            ((torrent.completed / torrent.size) * 100).toFixed(
+                              2
+                            )
                           ) + "%"
                         )
                       ]),
                       _vm._v(" "),
                       _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.dlspeed)) + "/s")
+                        _vm._v(_vm._s(_vm.smartSize(torrent.dl_speed)) + "/s")
                       ]),
                       _vm._v(" "),
                       _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.upspeed)) + "/s")
+                        _vm._v(_vm._s(_vm.smartSize(torrent.up_speed)) + "/s")
                       ]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(torrent.ratio.toFixed(2)))])

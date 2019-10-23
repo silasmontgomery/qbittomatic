@@ -20,8 +20,11 @@ th, td {
     white-space: nowrap;
 }
 tr.selectable:hover {
-    background-color: #eee;
+    background-color: #fffdce;
     cursor: pointer;
+}
+tr.torrent-details td {
+    background-color: #f2f2f2;
 }
 div.responsive {
     overflow: auto;

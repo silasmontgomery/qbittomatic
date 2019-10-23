@@ -19,10 +19,10 @@
                 <tr class="selectable" @click="onTorrentClick(torrent)" :key="torrent.hash + 'A'">
                   <td>{{ torrent.name }}</td>
                   <td>{{ torrent.state }}</td>
-                  <td>{{ smartSize(torrent.total_size) }}</td>
-                  <td>{{ ((torrent.completed / torrent.total_size)*100).toFixed(2) }}%</td>
-                  <td>{{ smartSize(torrent.dlspeed) }}/s</td>
-                  <td>{{ smartSize(torrent.upspeed) }}/s</td>
+                  <td>{{ smartSize(torrent.size) }}</td>
+                  <td>{{ ((torrent.completed / torrent.size)*100).toFixed(2) }}%</td>
+                  <td>{{ smartSize(torrent.dl_speed) }}/s</td>
+                  <td>{{ smartSize(torrent.up_speed) }}/s</td>
                   <td>{{ torrent.ratio.toFixed(2) }}</td>
                 </tr>
                 <tr :ref="torrent.hash" class="torrent-details hidden" :key="torrent.hash + 'B'">
