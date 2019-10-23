@@ -46,16 +46,14 @@ export default {
       activeTorrents: [],
       activeFields: [
         {
-          key: 'name',
-          //label: ''
+          key: 'name'
         },
         {
           key: 'state',
           label: 'Status'
         },
         {
-          key: 'size',
-          //label: '',
+          key: 'size'
         },
         {
           key: 'download_percent',
@@ -70,8 +68,7 @@ export default {
           label: 'UL Speed',
         },
         {
-          key: 'share_ratio',
-          //label: '',
+          key: 'share_ratio'
         },
       ],
       searchResults: [],
