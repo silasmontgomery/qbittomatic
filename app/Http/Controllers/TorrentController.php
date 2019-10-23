@@ -35,10 +35,21 @@ class TorrentController extends Controller
      */
     public function index(): JsonResponse
     {
-        $paths = json_decode($this->paths());
+        $paths = $this->getPaths();
+
+        $getName = function ($paths, $path) {
+            foreach ($paths as $one) {
+                if (trim(strtolower($one['path'])) == trim(strtolower($path))) {
+                    return $one['name'];
+                }
+            }
+            return '';
+        };
+
+        //die(var_dump($getName($paths, "/files/Downloads")));
 
         $torrent_list = json_decode($this->api->torrentList());
-        $torrents = array_map(function ($torrent) use ($paths) {
+        $torrents = array_map(function ($torrent) use ($paths, $getName) {
             return [
                 'name' => $torrent->name,
                 'state' => $torrent->state,
@@ -49,7 +60,7 @@ class TorrentController extends Controller
                 'ratio' => $torrent->ratio,
                 'dl_speed' => $torrent->dlspeed,
                 'up_speed' => $torrent->upspeed,
-                'path' => array_search($torrent->save_path, $paths)
+                'path' => $getName($paths, $torrent->save_path),
             ];
         }, $torrent_list);
         
@@ -65,6 +76,11 @@ class TorrentController extends Controller
      */
     public function paths(): JsonResponse
     {
+        return response()->json($this->getPaths());
+    }
+
+    private function getPaths(): array
+    {
         $paths = explode(',', env('TORRENT_PATHS'));
         $paths_arr = [];
         foreach ($paths as $path) {
@@ -72,6 +88,6 @@ class TorrentController extends Controller
             $paths_arr[] = ['name' => $k, 'path' => $v];
         }
 
-        return response()->json($paths_arr);
+        return $paths_arr;
     }
 }
