@@ -1974,12 +1974,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silasmontgomery/qbittorrent-web-api.git",
-                "reference": "9c8657aa606aa3194238b9bda8730ef39156492a"
+                "reference": "e8f134e18ddd50fc5139c39d6b8b7b2bc065d349"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api/zipball/9c8657aa606aa3194238b9bda8730ef39156492a",
-                "reference": "9c8657aa606aa3194238b9bda8730ef39156492a",
+                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api/zipball/e8f134e18ddd50fc5139c39d6b8b7b2bc065d349",
+                "reference": "e8f134e18ddd50fc5139c39d6b8b7b2bc065d349",
                 "shasum": ""
             },
             "require": {
@@ -2009,7 +2009,7 @@
                 }
             ],
             "description": "A PHP library for accessing the QBittorrent web API.",
-            "time": "2019-10-24T02:43:38+00:00"
+            "time": "2019-10-24T17:08:17+00:00"
         },
         {
             "name": "symfony/console",

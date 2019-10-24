@@ -20,7 +20,7 @@
                   <td>{{ torrent.name }}</td>
                   <td>{{ torrent.state }}</td>
                   <td>{{ smartSize(torrent.size) }}</td>
-                  <td>{{ torrent.completed }}%</td>
+                  <td>{{ torrent.completed.toFixed(2) }}%</td>
                   <td>{{ smartSize(torrent.dl_speed) }}/s</td>
                   <td>{{ smartSize(torrent.up_speed) }}/s</td>
                   <td>{{ torrent.ratio.toFixed(2) }}</td>

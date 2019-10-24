@@ -2528,7 +2528,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(_vm.smartSize(torrent.size)))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(torrent.completed) + "%")]),
+                      _c("td", [
+                        _vm._v(_vm._s(torrent.completed.toFixed(2)) + "%")
+                      ]),
                       _vm._v(" "),
                       _c("td", [
                         _vm._v(_vm._s(_vm.smartSize(torrent.dl_speed)) + "/s")
