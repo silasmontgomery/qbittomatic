@@ -1494,7 +1494,7 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/axios/node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -1829,6 +1829,28 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/axios/node_modules/is-buffer/index.js":
+/*!************************************************************!*\
+  !*** ./node_modules/axios/node_modules/is-buffer/index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dashboard.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dashboard.vue?vue&type=script&lang=js& ***!
@@ -1886,11 +1908,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       torrents: [],
+      deleteFiles: [],
       paths: [],
       errors: []
     };
@@ -1938,6 +1968,33 @@ __webpack_require__.r(__webpack_exports__);
         _this4.errors.push(e);
       });
     },
+    onDeleteFilesChange: function onDeleteFilesChange(torrent) {
+      var exists = this.deleteFiles.find(function (t) {
+        return t.hash == torrent.hash;
+      });
+
+      if (!exists) {
+        this.deleteFiles.push({
+          hash: torrent.hash,
+          "delete": true
+        });
+      } else {
+        this.deleteFiles = this.deleteFiles.filter(function (t) {
+          return t.hash != torrent.hash;
+        });
+      }
+    },
+    onRemoveTorrentClick: function onRemoveTorrentClick(torrent) {
+      var _this5 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/api/v1/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(function (t) {
+        return t.hash == torrent.hash;
+      }) ? 1 : 0)).then(function (response) {
+        console.log(response);
+      })["catch"](function (e) {
+        _this5.errors.push(e);
+      });
+    },
     smartSize: function smartSize(byteSize) {
       var smartSize = 0;
 
@@ -1955,28 +2012,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
-
-/***/ }),
-
-/***/ "./node_modules/is-buffer/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/is-buffer/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
 
 /***/ }),
 
@@ -2517,53 +2552,91 @@ var render = function() {
                     },
                     [
                       _c("td", { attrs: { colspan: "7" } }, [
-                        _vm._v(
-                          "\n                  Path: \n                  "
-                        ),
-                        _c(
-                          "select",
-                          {
-                            directives: [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col" }, [
+                            _vm._v(
+                              "\n                      Current Folder: \n                      "
+                            ),
+                            _c(
+                              "select",
                               {
-                                name: "model",
-                                rawName: "v-model",
-                                value: torrent.path,
-                                expression: "torrent.path"
-                              }
-                            ],
-                            on: {
-                              change: [
-                                function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
-                                    })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
-                                    })
-                                  _vm.$set(
-                                    torrent,
-                                    "path",
-                                    $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  )
-                                },
-                                function($event) {
-                                  return _vm.onPathChange(torrent)
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: torrent.path,
+                                    expression: "torrent.path"
+                                  }
+                                ],
+                                on: {
+                                  change: [
+                                    function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        torrent,
+                                        "path",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    },
+                                    function($event) {
+                                      return _vm.onPathChange(torrent)
+                                    }
+                                  ]
                                 }
-                              ]
-                            }
-                          },
-                          _vm._l(_vm.paths, function(path) {
-                            return _c("option", { key: path.name }, [
-                              _vm._v(_vm._s(path.name))
+                              },
+                              _vm._l(_vm.paths, function(path) {
+                                return _c("option", { key: path.name }, [
+                                  _vm._v(_vm._s(path.name))
+                                ])
+                              }),
+                              0
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col text-right" }, [
+                            _c(
+                              "button",
+                              {
+                                on: {
+                                  click: function($event) {
+                                    return _vm.onRemoveTorrentClick(torrent)
+                                  }
+                                }
+                              },
+                              [_vm._v("Remove Torrent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              staticClass: "ml",
+                              attrs: {
+                                id: "deleteFiles",
+                                type: "checkbox",
+                                value: "1"
+                              },
+                              on: {
+                                change: function($event) {
+                                  return _vm.onDeleteFilesChange(torrent)
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("label", { attrs: { for: "deleteFiles" } }, [
+                              _vm._v("Delete files")
                             ])
-                          }),
-                          0
-                        )
+                          ])
+                        ])
                       ])
                     ]
                   )

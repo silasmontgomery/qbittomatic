@@ -27,10 +27,17 @@
                 </tr>
                 <tr :ref="torrent.hash" class="torrent-details hidden" :key="torrent.hash + 'B'">
                   <td colspan="7">
-                    Path: 
-                    <select v-model="torrent.path" @change="onPathChange(torrent)">
-                      <option v-for="path in paths" :key="path.name">{{ path.name }}</option>
-                    </select>
+                    <div class="row">
+                      <div class="col">
+                        Current Folder: 
+                        <select v-model="torrent.path" @change="onPathChange(torrent)">
+                          <option v-for="path in paths" :key="path.name">{{ path.name }}</option>
+                        </select>
+                      </div>
+                      <div class="col text-right">
+                        <button @click="onRemoveTorrentClick(torrent)">Remove Torrent</button> <input id="deleteFiles" type="checkbox" value="1" class="ml" @change="onDeleteFilesChange(torrent)" /> <label for="deleteFiles">Delete files</label>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </template>
@@ -51,6 +58,7 @@ export default {
   data: function () {
     return {
       torrents: [],
+      deleteFiles: [],
       paths: [],
       errors: []
     }
@@ -88,6 +96,23 @@ export default {
       axios.post('/api/v1/torrent/' + torrent.hash, {
         path: torrent.path
       })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
+    },
+    onDeleteFilesChange: function(torrent) {
+      let exists = this.deleteFiles.find(t => t.hash == torrent.hash);
+      if(!exists) {
+        this.deleteFiles.push({ hash: torrent.hash, delete: true });
+      } else {
+        this.deleteFiles = this.deleteFiles.filter(t => t.hash != torrent.hash);
+      }
+    },
+    onRemoveTorrentClick: function(torrent) {
+      axios.delete('/api/v1/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(t => t.hash == torrent.hash) ? 1:0))
       .then(response => {
         console.log(response);
       })
