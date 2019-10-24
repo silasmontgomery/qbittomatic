@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9992670d4866a6bd0f2e5dc255850f0",
+    "content-hash": "bf22680d097a715fdaf0459b2c50fe48",
     "packages": [
         {
             "name": "curl/curl",
@@ -1969,25 +1969,21 @@
             "time": "2017-10-23T01:57:42+00:00"
         },
         {
-            "name": "silasmontgomery/qbittorrent-web-api",
+            "name": "silasmontgomery/qbittorrent-web-api-wrapper",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/silasmontgomery/qbittorrent-web-api.git",
-                "reference": "e8f134e18ddd50fc5139c39d6b8b7b2bc065d349"
+                "url": "https://github.com/silasmontgomery/qbittorrent-web-api-wrapper.git",
+                "reference": "18c84ba0ba0c147b2a753316137d05a913268070"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api/zipball/e8f134e18ddd50fc5139c39d6b8b7b2bc065d349",
-                "reference": "e8f134e18ddd50fc5139c39d6b8b7b2bc065d349",
+                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api-wrapper/zipball/18c84ba0ba0c147b2a753316137d05a913268070",
+                "reference": "18c84ba0ba0c147b2a753316137d05a913268070",
                 "shasum": ""
             },
             "require": {
                 "curl/curl": "^2.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^8",
-                "vlucas/phpdotenv": "^3.6"
             },
             "type": "library",
             "autoload": {
@@ -2008,8 +2004,42 @@
                     "email": "nomsalis@reticent.net"
                 }
             ],
-            "description": "A PHP library for accessing the QBittorrent web API.",
-            "time": "2019-10-24T17:08:17+00:00"
+            "description": "An API wrapper for the QBittorrent web API.",
+            "time": "2019-10-24T17:35:39+00:00"
+        },
+        {
+            "name": "silasmontgomery/yts-api-wrapper",
+            "version": "1.0.0-dev",
+            "dist": {
+                "type": "path",
+                "url": "/home/smontgomery/Projects/yts-api-wrapper",
+                "reference": "7f2beb57becfea6bbb0ce1146b30e1c590d24ff3"
+            },
+            "require": {
+                "curl/curl": "^2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ],
+                "psr-4": {
+                    "silasmontgomery\\YtsApi\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Silas Montgomery",
+                    "email": "nomsalis@reticent.net"
+                }
+            ],
+            "description": "An API wrapper for YTS torrent search API",
+            "transport-options": {
+                "symlink": true
+            }
         },
         {
             "name": "symfony/console",
@@ -4818,7 +4848,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "silasmontgomery/qbittorrent-web-api": 20
+        "silasmontgomery/qbittorrent-web-api-wrapper": 20,
+        "silasmontgomery/yts-api-wrapper": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

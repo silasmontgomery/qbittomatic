@@ -14,8 +14,8 @@ tbody tr:not(:first-child) td {
 }
 th, td {
     text-align: left;
-    padding: 10px;
-    white-space: nowrap;
+    vertical-align: top;
+    padding: 5px;
 }
 tr.selectable:hover {
     background-color: #fffdce;
@@ -26,6 +26,14 @@ tr.torrent-details td {
     box-sizing: border-box;
     background-color: #f2f2f2;
 }
+table.small th, table.small td, table.small button {
+    padding: 2px;
+    font-size: .85em;
+    width: auto;
+}
+table.plain td {
+    border: none !important;
+} 
 div.responsive {
     overflow: auto;
 }
@@ -38,7 +46,7 @@ div.card {
 select, input[type=text], textarea {
     padding: 5px;
     border-radius: 3px;
-    border-color: #999;
+    border: 1px solid #999;
     color: #333;
 }
 button {
@@ -51,6 +59,9 @@ button {
 button:hover {
     background-color: #555;
 }
+p {
+    margin: 0px 0px 10px 0px;
+}
 .hidden {
     display: none;
 }
@@ -61,17 +72,29 @@ button:hover {
 .col {
     flex-grow: 1;
 }
-.mt {
+.mt-5 {
     margin-top: 5px;
 }
-.mb {
+.mb-5 {
     margin-bottom: 5px;
 }
-.ml {
+.ml-5 {
     margin-left: 5px;
 }
-.mr {
+.mr-5 {
     margin-right: 5px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.ml-10 {
+    margin-left: 10px;
+}
+.mr-10 {
+    margin-right: 10px;
 }
 .text-left {
     text-align: left;
@@ -84,4 +107,13 @@ button:hover {
 }
 .bold {
     font-weight: bold;
+}
+.text-lighter {
+    color: #555;
+}
+.text-smaller {
+    font-size: .85em;
+}
+.nowrap {
+    white-space: nowrap;
 }

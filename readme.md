@@ -22,8 +22,7 @@
 Point your webserver to the public folder
 
 ## TODOs
-1. Add torrent search backend via plugins/libraries
-2. Add torrent search to UI
+1. Add support for additional torrent search engines
 3. Add additional torrent management functionality (pause ul/dl, throttle ul/dl speeds, set share ratio, move/delete on complete, etc)
 
 ## License

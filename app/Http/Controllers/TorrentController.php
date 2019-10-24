@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use silasmontgomery\QBittorrentWebApi\Api;
+use silasmontgomery\YtsApi\Api as SearchApi;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class TorrentController extends Controller
 {
@@ -124,6 +124,31 @@ class TorrentController extends Controller
     }
 
     /**
+     * Search for torrents via torrent search engine
+     *
+     * @return JsonResponse
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $api = new SearchApi('https://yts.ae');
+        $results = json_decode($api->torrentSearch($request->q), true);
+
+        return response()->json($results);
+    }
+    
+    /**
+     * Add new torrent
+     *
+     * @return JsonResponse
+     */
+    public function add(Request $request): JsonResponse
+    {
+        $results = json_decode($this->api->torrentAdd($request->magnet));
+
+        return response()->json($results);
+    }
+
+    /**
      * Return the list of torrent paths from .env
      *
      * @return JsonResponse
@@ -143,8 +168,10 @@ class TorrentController extends Controller
         $paths = explode(',', env('TORRENT_PATHS'));
         $paths_arr = [];
         foreach ($paths as $path) {
-            list($k, $v) = explode('=', $path);
-            $paths_arr[] = ['name' => $k, 'path' => $v];
+            if (!empty($path)) {
+                list($k, $v) = explode('=', $path);
+                $paths_arr[] = ['name' => $k, 'path' => $v];
+            }
         }
 
         return $paths_arr;

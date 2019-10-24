@@ -12,11 +12,16 @@
 */
 
 // API Routes
+
+use App\Http\Controllers\TorrentController;
+
 $router->group(['prefix' => 'api'], function ($router) {
     $router->group(['prefix' => 'v1'], function ($router) {
         $router->get('/torrent', 'TorrentController@index');
         $router->post('/torrent/{hash}', 'TorrentController@update');
+        $router->post('/torrent', 'TorrentController@add');
         $router->delete('/torrent/{hash}', 'TorrentController@delete');
+        $router->get('/search', 'TorrentController@search');
         $router->get('/paths', 'TorrentController@paths');
         $router->get('/key', function () {
             $bytes = random_bytes(16);

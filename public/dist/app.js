@@ -1915,6 +1915,56 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1922,6 +1972,10 @@ __webpack_require__.r(__webpack_exports__);
       torrents: [],
       deleteFiles: [],
       paths: [],
+      searching: false,
+      search: null,
+      results: [],
+      website: null,
       errors: []
     };
   },
@@ -1993,6 +2047,31 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
       })["catch"](function (e) {
         _this5.errors.push(e);
+      });
+    },
+    doSearch: function doSearch() {
+      var _this6 = this;
+
+      this.searching = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search?q=' + this.search).then(function (response) {
+        _this6.results = response.data.data.movies;
+        _this6.website = response.data.website;
+      })["catch"](function (e) {
+        _this6.errors.push(e);
+      })["finally"](function (f) {
+        _this6.searching = false;
+        _this6.search = null;
+      });
+    },
+    addTorrent: function addTorrent(torrent) {
+      var _this7 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/torrent', {
+        magnet: torrent.magnet
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (e) {
+        _this7.errors.push(e);
       });
     },
     smartSize: function smartSize(byteSize) {
@@ -2522,7 +2601,9 @@ var render = function() {
                       }
                     },
                     [
-                      _c("td", [_vm._v(_vm._s(torrent.name))]),
+                      _c("td", { staticClass: "nowrap" }, [
+                        _vm._v(_vm._s(torrent.name))
+                      ]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(torrent.state))]),
                       _vm._v(" "),
@@ -2621,7 +2702,7 @@ var render = function() {
                             ),
                             _vm._v(" "),
                             _c("input", {
-                              staticClass: "ml",
+                              staticClass: "ml-5",
                               attrs: {
                                 id: "deleteFiles",
                                 type: "checkbox",
@@ -2657,7 +2738,133 @@ var render = function() {
           )
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "text-right mt-10" }, [
+      _vm.searching ? _c("span", [_vm._v("Searching...")]) : _vm._e(),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.search,
+            expression: "search"
+          }
+        ],
+        attrs: { type: "text", placeholder: "Torrent search" },
+        domProps: { value: _vm.search },
+        on: {
+          focus: function($event) {
+            _vm.search = null
+          },
+          keyup: function($event) {
+            if (
+              !$event.type.indexOf("key") &&
+              _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+            ) {
+              return null
+            }
+            return _vm.doSearch($event)
+          },
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.search = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "ml-5",
+          attrs: { disabled: _vm.searching || _vm.search == null },
+          on: { click: _vm.doSearch }
+        },
+        [_vm._v("Search")]
+      )
+    ]),
+    _vm._v(" "),
+    _vm.results && _vm.results.length > 0
+      ? _c("div", { staticClass: "card mt-10" }, [
+          _c("div", { staticClass: "responsive" }, [
+            _c("table", [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.results, function(result) {
+                  return _c("tr", { key: result.id }, [
+                    _c("td", { staticClass: "nowrap" }, [
+                      _vm._v(_vm._s(result.title))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-lighter" }, [
+                      _c("p", [_vm._v(_vm._s(result.summary))]),
+                      _vm._v(" "),
+                      _c("em", [_vm._v(_vm._s(result.genres.join(", ")))])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(result.language))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(result.year))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("table", { staticClass: "plain" }, [
+                        _vm._m(2, true),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(result.torrents, function(torrent) {
+                            return _c(
+                              "tr",
+                              {
+                                key: torrent.hash,
+                                staticClass: "selectable",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.addTorrent(torrent)
+                                  }
+                                }
+                              },
+                              [
+                                _c("td", { staticClass: "nowrap" }, [
+                                  _vm._v(
+                                    _vm._s(torrent.quality) +
+                                      " (" +
+                                      _vm._s(torrent.type) +
+                                      ")"
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "nowrap" }, [
+                                  _vm._v(_vm._s(torrent.size))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "nowrap" }, [
+                                  _vm._v(_vm._s(torrent.seeds))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "nowrap" }, [
+                                  _vm._v(_vm._s(torrent.peers))
+                                ])
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ])
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -2680,6 +2887,42 @@ var staticRenderFns = [
         _c("th", [_vm._v("UL Speed")]),
         _vm._v(" "),
         _c("th", [_vm._v("Share Ratio")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Summary")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Language")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Year")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Torrents")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Quality")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Size")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Seeds")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Leeches")]),
+        _vm._v(" "),
+        _c("th")
       ])
     ])
   }
