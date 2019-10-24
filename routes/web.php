@@ -14,8 +14,9 @@
 // API Routes
 $router->group(['prefix' => 'api'], function ($router) {
     $router->group(['prefix' => 'v1'], function ($router) {
-        $router->get('/torrent_list', 'TorrentController@index');
-        $router->get('/torrent_paths', 'TorrentController@paths');
+        $router->get('/torrent', 'TorrentController@index');
+        $router->post('/torrent/{hash}', 'TorrentController@update');
+        $router->get('/paths', 'TorrentController@paths');
         $router->get('/key', function () {
             $bytes = random_bytes(16);
             return bin2hex($bytes);

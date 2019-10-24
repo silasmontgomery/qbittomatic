@@ -20,13 +20,18 @@
                   <td>{{ torrent.name }}</td>
                   <td>{{ torrent.state }}</td>
                   <td>{{ smartSize(torrent.size) }}</td>
-                  <td>{{ ((torrent.completed / torrent.size)*100).toFixed(2) }}%</td>
+                  <td>{{ torrent.completed }}%</td>
                   <td>{{ smartSize(torrent.dl_speed) }}/s</td>
                   <td>{{ smartSize(torrent.up_speed) }}/s</td>
                   <td>{{ torrent.ratio.toFixed(2) }}</td>
                 </tr>
                 <tr :ref="torrent.hash" class="torrent-details hidden" :key="torrent.hash + 'B'">
-                  <td colspan="7">Details</td>
+                  <td colspan="7">
+                    Path: 
+                    <select v-model="torrent.path" @change="onPathChange(torrent)">
+                      <option v-for="path in paths" :key="path.name">{{ path.name }}</option>
+                    </select>
+                  </td>
                 </tr>
               </template>
               <tr v-if="torrents.length == 0">
@@ -59,7 +64,7 @@ export default {
   },
   methods: {
     fetchTorrents: function() {
-      axios.get('/api/v1/torrent_list')
+      axios.get('/api/v1/torrent')
       .then(response => {
         this.torrents = response.data;
       })
@@ -68,9 +73,9 @@ export default {
       })
     },
     fetchPaths: function() {
-      axios.get('/api/v1/torrent_paths')
+      axios.get('/api/v1/paths')
       .then(response => {
-        this.torrentPaths = response.data;
+        this.paths = response.data;
       })
       .catch(e => {
         this.errors.push(e)
@@ -78,6 +83,17 @@ export default {
     },
     onTorrentClick: function(torrent) {
       this.$refs[torrent.hash][0].classList.toggle("hidden");
+    },
+    onPathChange: function(torrent) {
+      axios.post('/api/v1/torrent/' + torrent.hash, {
+        path: torrent.path
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
     },
     smartSize: function(byteSize) {
       let smartSize = 0;

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use silasmontgomery\QBittorrentWebApi\Api;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Http\Resources\TorrentResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TorrentController extends Controller
 {
@@ -37,16 +38,15 @@ class TorrentController extends Controller
     {
         $paths = $this->getPaths();
 
+        // Closure to get path name in array_amp
         $getName = function ($paths, $path) {
             foreach ($paths as $one) {
-                if (trim(strtolower($one['path'])) == trim(strtolower($path))) {
+                if (trim(strtolower($one['path']), " /") == trim(strtolower($path), " /")) {
                     return $one['name'];
                 }
             }
             return '';
         };
-
-        //die(var_dump($getName($paths, "/files/Downloads")));
 
         $torrent_list = json_decode($this->api->torrentList());
         $torrents = array_map(function ($torrent) use ($paths, $getName) {
@@ -63,10 +63,42 @@ class TorrentController extends Controller
                 'path' => $getName($paths, $torrent->save_path),
             ];
         }, $torrent_list);
-        
 
         return response()->json($torrents);
-        //return response()->json($torrent_list);
+    }
+
+    /**
+     * Update torrent properties
+     * 
+     * @return JsonResponse
+     */
+    public function update(Request $request, string $hash): JsonResponse
+    {
+        $torrent = false;
+        $torrents = json_decode($this->api->torrentList());
+        foreach ($torrents as $one) {
+            if ($one->hash == $hash) {
+                $torrent = $one;
+            }
+        }
+        if (!$torrent) {
+            die('Torrent not found.');
+        }
+
+        if ($request->path) {
+            $path = false;
+            $paths = $this->getPaths();
+            foreach ($paths as $one) {
+                if ($one['name'] == $request->path) {
+                    $path = $one['path'];
+                }
+            }
+            if ($path) {
+                return response()->json(json_decode($this->api->setTorrentLocation($hash, $path)));
+            }
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -81,6 +113,11 @@ class TorrentController extends Controller
 
     private function getPaths(): array
     {
+        $path_check = explode(',', env('TORRENT_PATHS'))[0];
+        if (empty($path_check) || count(explode('=', $path_check)) < 2) {
+            die('Missing .env variable TORRENT_PATHS (ex: TORRENT_PATHS=Name1=Path1,...,Name2=Path2');
+        }
+        
         $paths = explode(',', env('TORRENT_PATHS'));
         $paths_arr = [];
         foreach ($paths as $path) {
