@@ -61,6 +61,7 @@ class TorrentController extends Controller
                 'dl_speed' => $torrent->dlspeed,
                 'up_speed' => $torrent->upspeed,
                 'path' => $getName($paths, $torrent->save_path),
+                'folder' => $torrent->save_path
             ];
         }, $torrent_list);
 
@@ -69,7 +70,7 @@ class TorrentController extends Controller
 
     /**
      * Update torrent properties
-     * 
+     *
      * @return JsonResponse
      */
     public function update(Request $request, string $hash): JsonResponse
@@ -99,6 +100,27 @@ class TorrentController extends Controller
         }
 
         return response()->json(['success' => false]);
+    }
+
+    /**
+     * Delete torrent
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, string $hash): JsonResponse
+    {
+        $torrent = false;
+        $torrents = json_decode($this->api->torrentList());
+        foreach ($torrents as $one) {
+            if ($one->hash == $hash) {
+                $torrent = $one;
+            }
+        }
+        if (!$torrent) {
+            die('Torrent not found.');
+        }
+
+        return response()->json(json_decode($this->api->torrentDelete($hash, $request->deleteFiles)));
     }
 
     /**
