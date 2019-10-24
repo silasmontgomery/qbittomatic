@@ -13,10 +13,10 @@
 ## Create and edit .env
 1. `cp .env.example .env`
 2. `vim .env`
-3. Set 'QBITTORRENT_URL=' to the URL of your qBittorrent web interface (including protocol and port, ie: https://some.website.com:8080)
-4. Set 'QBITTORRENT_USERNAME=' to your qBittorrent web username
-5. Set 'QBITTORRENT_PASSWORD=' to your qBittorrent web password
-6. Set 'TORRENT_PATHS=' to the locations of your media/software folders as NAME1=PATH1,NAME2=PATH2 (ie: Movies=/files/movies,Software=/files/Software,...)
+3. Set `QBITTORRENT_URL=` to the URL of your qBittorrent web interface (including protocol and port, ie: https://some.website.com:8080)
+4. Set `QBITTORRENT_USERNAME=` to your qBittorrent web username
+5. Set `QBITTORRENT_PASSWORD=` to your qBittorrent web password
+6. Set `TORRENT_PATHS=` to the locations of your media/software folders as NAME1=PATH1,NAME2=PATH2 (ie: Movies=/files/movies,Software=/files/Software,...)
 
 ## Configure web server
 Point your webserver to the public folder
