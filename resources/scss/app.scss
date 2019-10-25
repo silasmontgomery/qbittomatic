@@ -1,5 +1,5 @@
 body {
-    padding: 20px;
+    padding: 0;
     background-color: #efefef;
 }
 table {
@@ -61,6 +61,14 @@ button:hover {
 }
 p {
     margin: 0px 0px 10px 0px;
+}
+#app {
+    padding: 20px;
+}
+#menu {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
 }
 .hidden {
     display: none;

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="dist/app.css" />
 </head>
 <body>
+    <menu-component></menu-component>
     <div id="app">
         <router-view></router-view>
     </div>
