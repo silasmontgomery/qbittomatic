@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": "^7.2",
+        "firebase/php-jwt": "^5.0",
         "laravel/lumen-framework": "^6.0",
         "silasmontgomery/qbittorrent-web-api-wrapper": "dev-master",
         "silasmontgomery/yts-api-wrapper": "1.0.0-dev"

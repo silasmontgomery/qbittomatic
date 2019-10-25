@@ -1,5 +1,26 @@
 <template>
   <div>
+    <div v-if="!token">
+      <div class="text-center">
+        <div class="login-form text-left">
+          <div class="mb-10">
+            qBittomatic Login
+          </div>
+          <div class="mb-5">
+            <input type="text" placeholder="email address" v-model="email" /> 
+            <div class="form-error" v-if="errors.email">{{ errors.email[0] }}</div>
+          </div>
+          <div class="mb-5">
+            <input type="password" placeholder="password" v-model="password" />
+            <div class="form-error" v-if="errors.password">{{ errors.password[0] }}</div>
+          </div>
+          <div>
+            <button @click="doLogin">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="token">
       <div class="card">
         <div class="responsive">
           <table>
@@ -75,6 +96,7 @@
           </table>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -84,6 +106,10 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
+      baseURL: '/api/v1',
+      email: null,
+      password: null,
+      token: null,
       torrents: [],
       deleteFiles: [],
       paths: [],
@@ -96,16 +122,14 @@ export default {
     }
   },
   mounted() {
-    this.fetchTorrents();
-    this.fetchPaths();
-    this.fetchApis();
-    window.setInterval(f => { this.fetchTorrents() }, 1000);
+    axios.defaults.baseURL = this.baseURL;
+    axios.defaults.headers.common['Auth-Token'] = this.token;
   },
   computed: {
   },
   methods: {
     fetchTorrents: function() {
-      axios.get('/api/v1/torrent')
+      axios.get('/torrent')
       .then(response => {
         this.torrents = response.data;
       })
@@ -114,7 +138,7 @@ export default {
       })
     },
     fetchPaths: function() {
-      axios.get('/api/v1/paths')
+      axios.get('/paths')
       .then(response => {
         this.paths = response.data;
       })
@@ -123,7 +147,7 @@ export default {
       })
     },
     fetchApis: function() {
-      axios.get('/api/v1/search_apis')
+      axios.get('/search_apis')
       .then(response => {
         this.apis = response.data;
         this.api = this.apis[0].name;
@@ -136,7 +160,7 @@ export default {
       this.$refs[torrent.hash][0].classList.toggle("hidden");
     },
     onPathChange: function(torrent) {
-      axios.post('/api/v1/torrent/' + torrent.hash, {
+      axios.post('/torrent/' + torrent.hash, {
         path: torrent.path
       })
       .then(response => {
@@ -155,7 +179,7 @@ export default {
       }
     },
     onRemoveTorrentClick: function(torrent) {
-      axios.delete('/api/v1/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(t => t.hash == torrent.hash) ? 1:0))
+      axios.delete('/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(t => t.hash == torrent.hash) ? 1:0))
       .then(response => {
         console.log(response);
       })
@@ -165,7 +189,7 @@ export default {
     },
     onSearch: function() {
       this.searching = true;
-      axios.get('/api/v1/search?api=' + this.api + '&q=' + this.search)
+      axios.get('/search?api=' + this.api + '&q=' + this.search)
       .then(response => {
         this.results = response.data.torrents;
       })
@@ -178,7 +202,7 @@ export default {
       })
     },
     onResultClick: function(result) {
-      axios.post('/api/v1/torrent', {
+      axios.post('/torrent', {
         magnet: result.magnet
       })
       .then(response => {
@@ -186,6 +210,24 @@ export default {
       })
       .catch(e => {
         this.errors.push(e)
+      })
+    },
+    doLogin: function() {
+      axios.post('/auth/login', {
+        email: this.email,
+        password: this.password
+      })
+      .then(response => {
+        this.token = response.data.token
+        axios.defaults.headers.common['Auth-Token'] = this.token;
+
+        this.fetchTorrents();
+        this.fetchPaths();
+        this.fetchApis();
+        window.setInterval(f => { this.fetchTorrents() }, 1000);
+      })
+      .catch(e => {
+        this.errors = e.response.data;
       })
     },
     smartSize: function(byteSize) {

@@ -23,7 +23,9 @@ class TorrentController extends Controller
         $qbt_password = env('QBITTORRENT_PASSWORD');
 
         if (empty($qbt_url) || empty($qbt_username) || empty($qbt_password)) {
-            die("Missing .env values QBITTORRENT_URL, QBITTORRENT_USERNAME, or QBITTORRENT_PASSWORD");
+            return response()->json([
+                'error' => 'Missing .env values QBITTORRENT_URL, QBITTORRENT_USERNAME, or QBITTORRENT_PASSWORD'
+            ], 403);
         }
 
         $this->api = new Api($qbt_url, $qbt_username, $qbt_password);
@@ -84,7 +86,9 @@ class TorrentController extends Controller
         }
         
         if (!$torrent) {
-            die('Torrent not found.');
+            return response()->json([
+                'error' => 'Torrent not found.'
+            ], 404);
         }
 
         if ($request->path) {
@@ -100,7 +104,9 @@ class TorrentController extends Controller
             }
         }
 
-        return response()->json(['success' => false]);
+        return response()->json([
+            'success' => false
+        ], 403);
     }
 
     /**
@@ -118,7 +124,9 @@ class TorrentController extends Controller
             }
         }
         if (!$torrent) {
-            die('Torrent not found.');
+            return response()->json([
+                'error' => 'Torrent not found.'
+            ], 404);
         }
 
         return response()->json(json_decode($this->api->torrentDelete($hash, $request->deleteFiles)));
@@ -143,7 +151,9 @@ class TorrentController extends Controller
         }
 
         if (empty($namespace)) {
-            die("Search API not found.");
+            return response()->json([
+                'error' => 'Requested search API not found.'
+            ], 403);
         }
 
         $api = new $namespace;
@@ -192,7 +202,9 @@ class TorrentController extends Controller
     {
         $api_check = explode(',', env('TORRENT_SEARCH_APIS'))[0];
         if (empty($api_check) || count(explode('=', $api_check)) < 2) {
-            die('Missing .env variable TORRENT_SEARCH_APIS (ex: TORRENT_SEARCH_APIS=Name1=namespace1,Name2=namespace2');
+            return response()->json([
+                'error' => 'Missing .env variable TORRENT_SEARCH_APIS (ex: TORRENT_SEARCH_APIS=Name1=namespace1,Name2=namespace2'
+            ], 403);
         }
         
         $apis = explode(',', env('TORRENT_SEARCH_APIS'));
@@ -216,7 +228,9 @@ class TorrentController extends Controller
     {
         $path_check = explode(',', env('TORRENT_PATHS'))[0];
         if (empty($path_check) || count(explode('=', $path_check)) < 2) {
-            die('Missing .env variable TORRENT_PATHS (ex: TORRENT_PATHS=Name1=Path1,...,Name2=Path2');
+            return response()->json([
+                'error' => 'Missing .env variable TORRENT_PATHS (ex: TORRENT_PATHS=Name1=Path1,...,Name2=Path2'
+            ], 403);
         }
         
         $paths = explode(',', env('TORRENT_PATHS'));

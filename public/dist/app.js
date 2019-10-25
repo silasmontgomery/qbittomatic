@@ -1942,10 +1942,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      baseURL: '/api/v1',
+      email: null,
+      password: null,
+      token: null,
       torrents: [],
       deleteFiles: [],
       paths: [],
@@ -1958,57 +1984,51 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
-    this.fetchTorrents();
-    this.fetchPaths();
-    this.fetchApis();
-    window.setInterval(function (f) {
-      _this.fetchTorrents();
-    }, 1000);
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.baseURL = this.baseURL;
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common['Auth-Token'] = this.token;
   },
   computed: {},
   methods: {
     fetchTorrents: function fetchTorrents() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/torrent').then(function (response) {
+        _this.torrents = response.data;
+      })["catch"](function (e) {
+        _this.errors.push(e);
+      });
+    },
+    fetchPaths: function fetchPaths() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/torrent').then(function (response) {
-        _this2.torrents = response.data;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/paths').then(function (response) {
+        _this2.paths = response.data;
       })["catch"](function (e) {
         _this2.errors.push(e);
       });
     },
-    fetchPaths: function fetchPaths() {
+    fetchApis: function fetchApis() {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/paths').then(function (response) {
-        _this3.paths = response.data;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/search_apis').then(function (response) {
+        _this3.apis = response.data;
+        _this3.api = _this3.apis[0].name;
       })["catch"](function (e) {
         _this3.errors.push(e);
-      });
-    },
-    fetchApis: function fetchApis() {
-      var _this4 = this;
-
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search_apis').then(function (response) {
-        _this4.apis = response.data;
-        _this4.api = _this4.apis[0].name;
-      })["catch"](function (e) {
-        _this4.errors.push(e);
       });
     },
     onTorrentClick: function onTorrentClick(torrent) {
       this.$refs[torrent.hash][0].classList.toggle("hidden");
     },
     onPathChange: function onPathChange(torrent) {
-      var _this5 = this;
+      var _this4 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/torrent/' + torrent.hash, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/torrent/' + torrent.hash, {
         path: torrent.path
       }).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this5.errors.push(e);
+        _this4.errors.push(e);
       });
     },
     onDeleteFilesChange: function onDeleteFilesChange(torrent) {
@@ -2028,38 +2048,61 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     onRemoveTorrentClick: function onRemoveTorrentClick(torrent) {
-      var _this6 = this;
+      var _this5 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/api/v1/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(function (t) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(function (t) {
         return t.hash == torrent.hash;
       }) ? 1 : 0)).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this5.errors.push(e);
       });
     },
     onSearch: function onSearch() {
-      var _this7 = this;
+      var _this6 = this;
 
       this.searching = true;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search?api=' + this.api + '&q=' + this.search).then(function (response) {
-        _this7.results = response.data.torrents;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/search?api=' + this.api + '&q=' + this.search).then(function (response) {
+        _this6.results = response.data.torrents;
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this6.errors.push(e);
       })["finally"](function (f) {
-        _this7.searching = false;
-        _this7.search = null;
+        _this6.searching = false;
+        _this6.search = null;
       });
     },
     onResultClick: function onResultClick(result) {
-      var _this8 = this;
+      var _this7 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/torrent', {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/torrent', {
         magnet: result.magnet
       }).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this8.errors.push(e);
+        _this7.errors.push(e);
+      });
+    },
+    doLogin: function doLogin() {
+      var _this8 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/auth/login', {
+        email: this.email,
+        password: this.password
+      }).then(function (response) {
+        _this8.token = response.data.token;
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common['Auth-Token'] = _this8.token;
+
+        _this8.fetchTorrents();
+
+        _this8.fetchPaths();
+
+        _this8.fetchApis();
+
+        window.setInterval(function (f) {
+          _this8.fetchTorrents();
+        }, 1000);
+      })["catch"](function (e) {
+        _this8.errors = e.response.data;
       });
     },
     smartSize: function smartSize(byteSize) {
@@ -2592,281 +2635,374 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "responsive" }, [
-        _c("table", [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            { ref: "torrentTable" },
-            [
-              _vm._l(_vm.torrents, function(torrent) {
-                return [
-                  _c(
-                    "tr",
-                    {
-                      key: torrent.hash + "A",
-                      staticClass: "selectable",
-                      on: {
-                        click: function($event) {
-                          return _vm.onTorrentClick(torrent)
-                        }
-                      }
-                    },
-                    [
-                      _c("td", { staticClass: "nowrap" }, [
-                        _vm._v(_vm._s(torrent.name))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(torrent.state))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(_vm.smartSize(torrent.size)))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(torrent.completed.toFixed(2)) + "%")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.dl_speed)) + "/s")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.up_speed)) + "/s")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(torrent.ratio.toFixed(2)))])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "tr",
-                    {
-                      key: torrent.hash + "B",
-                      ref: torrent.hash,
-                      refInFor: true,
-                      staticClass: "torrent-details hidden"
-                    },
-                    [
-                      _c("td", { attrs: { colspan: "7" } }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v(
-                              "\n                      Current Folder: \n                      "
-                            ),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: torrent.path,
-                                    expression: "torrent.path"
-                                  }
-                                ],
-                                on: {
-                                  change: [
-                                    function($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call($event.target.options, function(
-                                          o
-                                        ) {
-                                          return o.selected
-                                        })
-                                        .map(function(o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        torrent,
-                                        "path",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
-                                    },
-                                    function($event) {
-                                      return _vm.onPathChange(torrent)
-                                    }
-                                  ]
-                                }
-                              },
-                              _vm._l(_vm.paths, function(path) {
-                                return _c("option", { key: path.name }, [
-                                  _vm._v(_vm._s(path.name))
-                                ])
-                              }),
-                              0
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col text-right" }, [
-                            _c(
-                              "button",
-                              {
-                                on: {
-                                  click: function($event) {
-                                    return _vm.onRemoveTorrentClick(torrent)
-                                  }
-                                }
-                              },
-                              [_vm._v("Remove Torrent")]
-                            ),
-                            _vm._v(" "),
-                            _c("input", {
-                              staticClass: "ml-5",
-                              attrs: {
-                                id: "deleteFiles",
-                                type: "checkbox",
-                                value: "1"
-                              },
-                              on: {
-                                change: function($event) {
-                                  return _vm.onDeleteFilesChange(torrent)
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("label", { attrs: { for: "deleteFiles" } }, [
-                              _vm._v("Delete files")
-                            ])
-                          ])
-                        ])
-                      ])
-                    ]
-                  )
-                ]
-              }),
+    !_vm.token
+      ? _c("div", [
+          _c("div", { staticClass: "text-center" }, [
+            _c("div", { staticClass: "login-form text-left" }, [
+              _c("div", { staticClass: "mb-10" }, [
+                _vm._v("\n          qBittomatic Login\n        ")
+              ]),
               _vm._v(" "),
-              _vm.torrents.length == 0
-                ? _c("tr", [
-                    _c("td", { attrs: { colspan: "7" } }, [
-                      _vm._v("No active torrents")
-                    ])
-                  ])
-                : _vm._e()
-            ],
-            2
-          )
-        ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "text-right mt-10" }, [
-      _vm.searching ? _c("span", [_vm._v("Searching...")]) : _vm._e(),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.api,
-              expression: "api"
-            }
-          ],
-          on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.api = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            }
-          }
-        },
-        _vm._l(_vm.apis, function(api) {
-          return _c("option", { key: api.name }, [_vm._v(_vm._s(api.name))])
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.search,
-            expression: "search"
-          }
-        ],
-        attrs: { type: "text", placeholder: "Torrent search" },
-        domProps: { value: _vm.search },
-        on: {
-          focus: function($event) {
-            _vm.search = null
-          },
-          keyup: function($event) {
-            if (
-              !$event.type.indexOf("key") &&
-              _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-            ) {
-              return null
-            }
-            return _vm.onSearch($event)
-          },
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.search = $event.target.value
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c("button", { staticClass: "ml-5", on: { click: _vm.onSearch } }, [
-        _vm._v("Search")
-      ])
-    ]),
-    _vm._v(" "),
-    _vm.results && _vm.results.length > 0
-      ? _c("div", { staticClass: "card mt-10" }, [
-          _c("div", { staticClass: "responsive" }, [
-            _c("table", [
-              _vm._m(1),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.results, function(result) {
-                  return _c(
-                    "tr",
+              _c("div", { staticClass: "mb-5" }, [
+                _c("input", {
+                  directives: [
                     {
-                      key: result.id,
-                      staticClass: "selectable",
-                      on: {
-                        click: function($event) {
-                          return _vm.onResultClick(result)
-                        }
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.email,
+                      expression: "email"
+                    }
+                  ],
+                  attrs: { type: "text", placeholder: "email address" },
+                  domProps: { value: _vm.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
                       }
-                    },
-                    [
-                      _c("td", { staticClass: "nowrap" }, [
-                        _vm._v(_vm._s(result.title))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(result.size))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(result.seeds))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(result.peers))]),
-                      _vm._v(" "),
-                      _c("td")
-                    ]
-                  )
+                      _vm.email = $event.target.value
+                    }
+                  }
                 }),
-                0
-              )
+                _vm._v(" "),
+                _vm.errors.email
+                  ? _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.errors.email[0]))
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "mb-5" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.password,
+                      expression: "password"
+                    }
+                  ],
+                  attrs: { type: "password", placeholder: "password" },
+                  domProps: { value: _vm.password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.password = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm.errors.password
+                  ? _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.errors.password[0]))
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", [
+                _c("button", { on: { click: _vm.doLogin } }, [_vm._v("Login")])
+              ])
             ])
           ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.token
+      ? _c("div", [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "responsive" }, [
+              _c("table", [
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  { ref: "torrentTable" },
+                  [
+                    _vm._l(_vm.torrents, function(torrent) {
+                      return [
+                        _c(
+                          "tr",
+                          {
+                            key: torrent.hash + "A",
+                            staticClass: "selectable",
+                            on: {
+                              click: function($event) {
+                                return _vm.onTorrentClick(torrent)
+                              }
+                            }
+                          },
+                          [
+                            _c("td", { staticClass: "nowrap" }, [
+                              _vm._v(_vm._s(torrent.name))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(torrent.state))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(_vm._s(_vm.smartSize(torrent.size)))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(_vm._s(torrent.completed.toFixed(2)) + "%")
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm.smartSize(torrent.dl_speed)) + "/s"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm.smartSize(torrent.up_speed)) + "/s"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(torrent.ratio.toFixed(2)))])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "tr",
+                          {
+                            key: torrent.hash + "B",
+                            ref: torrent.hash,
+                            refInFor: true,
+                            staticClass: "torrent-details hidden"
+                          },
+                          [
+                            _c("td", { attrs: { colspan: "7" } }, [
+                              _c("div", { staticClass: "row" }, [
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._v(
+                                    "\n                      Current Folder: \n                      "
+                                  ),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: torrent.path,
+                                          expression: "torrent.path"
+                                        }
+                                      ],
+                                      on: {
+                                        change: [
+                                          function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              torrent,
+                                              "path",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          },
+                                          function($event) {
+                                            return _vm.onPathChange(torrent)
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    _vm._l(_vm.paths, function(path) {
+                                      return _c("option", { key: path.name }, [
+                                        _vm._v(_vm._s(path.name))
+                                      ])
+                                    }),
+                                    0
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col text-right" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.onRemoveTorrentClick(
+                                            torrent
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Remove Torrent")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    staticClass: "ml-5",
+                                    attrs: {
+                                      id: "deleteFiles",
+                                      type: "checkbox",
+                                      value: "1"
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.onDeleteFilesChange(torrent)
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "deleteFiles" } },
+                                    [_vm._v("Delete files")]
+                                  )
+                                ])
+                              ])
+                            ])
+                          ]
+                        )
+                      ]
+                    }),
+                    _vm._v(" "),
+                    _vm.torrents.length == 0
+                      ? _c("tr", [
+                          _c("td", { attrs: { colspan: "7" } }, [
+                            _vm._v("No active torrents")
+                          ])
+                        ])
+                      : _vm._e()
+                  ],
+                  2
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "text-right mt-10" }, [
+            _vm.searching ? _c("span", [_vm._v("Searching...")]) : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.api,
+                    expression: "api"
+                  }
+                ],
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.api = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              _vm._l(_vm.apis, function(api) {
+                return _c("option", { key: api.name }, [
+                  _vm._v(_vm._s(api.name))
+                ])
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search"
+                }
+              ],
+              attrs: { type: "text", placeholder: "Torrent search" },
+              domProps: { value: _vm.search },
+              on: {
+                focus: function($event) {
+                  _vm.search = null
+                },
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.onSearch($event)
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("button", { staticClass: "ml-5", on: { click: _vm.onSearch } }, [
+              _vm._v("Search")
+            ])
+          ]),
+          _vm._v(" "),
+          _vm.results && _vm.results.length > 0
+            ? _c("div", { staticClass: "card mt-10" }, [
+                _c("div", { staticClass: "responsive" }, [
+                  _c("table", [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.results, function(result) {
+                        return _c(
+                          "tr",
+                          {
+                            key: result.id,
+                            staticClass: "selectable",
+                            on: {
+                              click: function($event) {
+                                return _vm.onResultClick(result)
+                              }
+                            }
+                          },
+                          [
+                            _c("td", { staticClass: "nowrap" }, [
+                              _vm._v(_vm._s(result.title))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(result.size))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(result.seeds))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(result.peers))]),
+                            _vm._v(" "),
+                            _c("td")
+                          ]
+                        )
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ])
+            : _vm._e()
         ])
       : _vm._e()
   ])

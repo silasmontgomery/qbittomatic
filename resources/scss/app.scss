@@ -43,7 +43,7 @@ div.card {
     padding: 10px;
     background-color: #fff;
 }
-select, input[type=text], textarea {
+select, input[type=text], input[type=password], textarea {
     padding: 5px;
     border-radius: 3px;
     border: 1px solid #999;
@@ -69,6 +69,10 @@ p {
     background-color: #333;
     color: #fff;
     padding: 10px;
+}
+.login-form {
+    max-width: 300px;
+    margin: auto;
 }
 .hidden {
     display: none;
@@ -122,6 +126,13 @@ p {
 .text-smaller {
     font-size: .85em;
 }
+.width-100 {
+    width: 100%;
+}
 .nowrap {
     white-space: nowrap;
+}
+.form-error {
+    color: rgb(170, 38, 38);
+    font-size: .9em;
 }
