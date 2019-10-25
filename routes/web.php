@@ -22,6 +22,7 @@ $router->group(['prefix' => 'api'], function ($router) {
         $router->post('/torrent', 'TorrentController@add');
         $router->delete('/torrent/{hash}', 'TorrentController@delete');
         $router->get('/search', 'TorrentController@search');
+        $router->get('/search_apis', 'TorrentController@searchApis');
         $router->get('/paths', 'TorrentController@paths');
         $router->get('/key', function () {
             $bytes = random_bytes(16);

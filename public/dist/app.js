@@ -1494,7 +1494,7 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/axios/node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -1829,6 +1829,28 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/axios/node_modules/is-buffer/index.js":
+/*!************************************************************!*\
+  !*** ./node_modules/axios/node_modules/is-buffer/index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dashboard.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dashboard.vue?vue&type=script&lang=js& ***!
@@ -1920,31 +1942,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1952,10 +1949,11 @@ __webpack_require__.r(__webpack_exports__);
       torrents: [],
       deleteFiles: [],
       paths: [],
+      apis: [],
+      api: null,
       searching: false,
       search: null,
       results: [],
-      website: null,
       errors: []
     };
   },
@@ -1964,6 +1962,7 @@ __webpack_require__.r(__webpack_exports__);
 
     this.fetchTorrents();
     this.fetchPaths();
+    this.fetchApis();
     window.setInterval(function (f) {
       _this.fetchTorrents();
     }, 1000);
@@ -1988,18 +1987,28 @@ __webpack_require__.r(__webpack_exports__);
         _this3.errors.push(e);
       });
     },
+    fetchApis: function fetchApis() {
+      var _this4 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search_apis').then(function (response) {
+        _this4.apis = response.data;
+        _this4.api = _this4.apis[0].name;
+      })["catch"](function (e) {
+        _this4.errors.push(e);
+      });
+    },
     onTorrentClick: function onTorrentClick(torrent) {
       this.$refs[torrent.hash][0].classList.toggle("hidden");
     },
     onPathChange: function onPathChange(torrent) {
-      var _this4 = this;
+      var _this5 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/torrent/' + torrent.hash, {
         path: torrent.path
       }).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this4.errors.push(e);
+        _this5.errors.push(e);
       });
     },
     onDeleteFilesChange: function onDeleteFilesChange(torrent) {
@@ -2019,39 +2028,38 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     onRemoveTorrentClick: function onRemoveTorrentClick(torrent) {
-      var _this5 = this;
+      var _this6 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/api/v1/torrent/' + torrent.hash + '?deleteFiles=' + (this.deleteFiles.find(function (t) {
         return t.hash == torrent.hash;
       }) ? 1 : 0)).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this5.errors.push(e);
-      });
-    },
-    doSearch: function doSearch() {
-      var _this6 = this;
-
-      this.searching = true;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search?q=' + this.search).then(function (response) {
-        _this6.results = response.data.data.movies;
-        _this6.website = response.data.website;
-      })["catch"](function (e) {
         _this6.errors.push(e);
-      })["finally"](function (f) {
-        _this6.searching = false;
-        _this6.search = null;
       });
     },
-    addTorrent: function addTorrent(torrent) {
+    onSearch: function onSearch() {
       var _this7 = this;
 
+      this.searching = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/v1/search?api=' + this.api + '&q=' + this.search).then(function (response) {
+        _this7.results = response.data.torrents;
+      })["catch"](function (e) {
+        _this7.errors.push(e);
+      })["finally"](function (f) {
+        _this7.searching = false;
+        _this7.search = null;
+      });
+    },
+    onResultClick: function onResultClick(result) {
+      var _this8 = this;
+
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/v1/torrent', {
-        magnet: torrent.magnet
+        magnet: result.magnet
       }).then(function (response) {
         console.log(response);
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this8.errors.push(e);
       });
     },
     smartSize: function smartSize(byteSize) {
@@ -2071,28 +2079,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
-
-/***/ }),
-
-/***/ "./node_modules/is-buffer/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/is-buffer/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
 
 /***/ }),
 
@@ -2745,6 +2731,39 @@ var render = function() {
     _c("div", { staticClass: "text-right mt-10" }, [
       _vm.searching ? _c("span", [_vm._v("Searching...")]) : _vm._e(),
       _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.api,
+              expression: "api"
+            }
+          ],
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.api = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            }
+          }
+        },
+        _vm._l(_vm.apis, function(api) {
+          return _c("option", { key: api.name }, [_vm._v(_vm._s(api.name))])
+        }),
+        0
+      ),
+      _vm._v(" "),
       _c("input", {
         directives: [
           {
@@ -2767,7 +2786,7 @@ var render = function() {
             ) {
               return null
             }
-            return _vm.doSearch($event)
+            return _vm.onSearch($event)
           },
           input: function($event) {
             if ($event.target.composing) {
@@ -2778,15 +2797,9 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "ml-5",
-          attrs: { disabled: _vm.searching || _vm.search == null },
-          on: { click: _vm.doSearch }
-        },
-        [_vm._v("Search")]
-      )
+      _c("button", { staticClass: "ml-5", on: { click: _vm.onSearch } }, [
+        _vm._v("Search")
+      ])
     ]),
     _vm._v(" "),
     _vm.results && _vm.results.length > 0
@@ -2798,68 +2811,31 @@ var render = function() {
               _c(
                 "tbody",
                 _vm._l(_vm.results, function(result) {
-                  return _c("tr", { key: result.id }, [
-                    _c("td", { staticClass: "nowrap" }, [
-                      _c("p", [_vm._v(_vm._s(result.title))]),
+                  return _c(
+                    "tr",
+                    {
+                      key: result.id,
+                      staticClass: "selectable",
+                      on: {
+                        click: function($event) {
+                          return _vm.onResultClick(result)
+                        }
+                      }
+                    },
+                    [
+                      _c("td", { staticClass: "nowrap" }, [
+                        _vm._v(_vm._s(result.title))
+                      ]),
                       _vm._v(" "),
-                      _c("em", [_vm._v(_vm._s(result.genres.join(", ")))])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-lighter" }, [
-                      _c("p", [_vm._v(_vm._s(result.summary))])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(result.language))]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(result.year))]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("table", { staticClass: "plain" }, [
-                        _vm._m(2, true),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          _vm._l(result.torrents, function(torrent) {
-                            return _c(
-                              "tr",
-                              {
-                                key: torrent.hash,
-                                staticClass: "selectable",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.addTorrent(torrent)
-                                  }
-                                }
-                              },
-                              [
-                                _c("td", { staticClass: "nowrap" }, [
-                                  _vm._v(
-                                    _vm._s(torrent.quality) +
-                                      " (" +
-                                      _vm._s(torrent.type) +
-                                      ")"
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "nowrap" }, [
-                                  _vm._v(_vm._s(torrent.size))
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "nowrap" }, [
-                                  _vm._v(_vm._s(torrent.seeds))
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "nowrap" }, [
-                                  _vm._v(_vm._s(torrent.peers))
-                                ])
-                              ]
-                            )
-                          }),
-                          0
-                        )
-                      ])
-                    ])
-                  ])
+                      _c("td", [_vm._v(_vm._s(result.size))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(result.seeds))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(result.peers))]),
+                      _vm._v(" "),
+                      _c("td")
+                    ]
+                  )
                 }),
                 0
               )
@@ -2900,29 +2876,11 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Title")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Summary")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Language")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Year")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Torrents")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Quality")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Size")]),
         _vm._v(" "),
         _c("th", [_vm._v("Seeds")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Leeches")]),
+        _c("th", [_vm._v("Peers")]),
         _vm._v(" "),
         _c("th")
       ])

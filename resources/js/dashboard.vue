@@ -49,7 +49,7 @@
         </div>
       </div>
       <div class="text-right mt-10">
-        <span v-if="searching">Searching...</span> <input type="text" v-model="search" @focus="search=null" v-on:keyup.enter="doSearch" placeholder="Torrent search" /> <button :disabled="searching || search == null" class="ml-5" @click="doSearch">Search</button>
+        <span v-if="searching">Searching...</span> <select v-model="api"><option v-for="api in apis" :key="api.name">{{ api.name }}</option></select> <input type="text" v-model="search" @focus="search=null" v-on:keyup.enter="onSearch" placeholder="Torrent search" /> <button class="ml-5" @click="onSearch">Search</button>
       </div>
       <div v-if="results && results.length > 0" class="card mt-10">
         <div class="responsive">
@@ -57,44 +57,19 @@
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Summary</th>
-                <th>Language</th>
-                <th>Year</th>
-                <th>Torrents</th>
+                <th>Size</th>
+                <th>Seeds</th>
+                <th>Peers</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="result in results" :key="result.id">
-                <td class="nowrap">
-                  <p>{{ result.title }}</p>
-                  <em>{{ result.genres.join(', ')}}</em>
-                </td>
-                <td class="text-lighter">
-                  <p>{{ result.summary }}</p>
-                </td>
-                <td>{{ result.language }}</td>
-                <td>{{ result.year }}</td>
-                <td>
-                  <table class="plain">
-                    <thead>
-                      <tr>
-                        <th>Quality</th>
-                        <th>Size</th>
-                        <th>Seeds</th>
-                        <th>Leeches</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="torrent in result.torrents" :key="torrent.hash" class="selectable" @click="addTorrent(torrent)">
-                        <td class="nowrap">{{ torrent.quality }} ({{ torrent.type }})</td>
-                        <td class="nowrap">{{ torrent.size }}</td>
-                        <td class="nowrap">{{ torrent.seeds }}</td>
-                        <td class="nowrap">{{ torrent.peers }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
+              <tr v-for="result in results" :key="result.id" class="selectable" @click="onResultClick(result)">
+                <td class="nowrap">{{ result.title }}</td>
+                <td>{{ result.size }}</td>
+                <td>{{ result.seeds }}</td>
+                <td>{{ result.peers }}</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -112,16 +87,18 @@ export default {
       torrents: [],
       deleteFiles: [],
       paths: [],
+      apis: [],
+      api: null,
       searching: false,
       search: null,
       results: [],
-      website: null,
       errors: []
     }
   },
   mounted() {
     this.fetchTorrents();
     this.fetchPaths();
+    this.fetchApis();
     window.setInterval(f => { this.fetchTorrents() }, 1000);
   },
   computed: {
@@ -140,6 +117,16 @@ export default {
       axios.get('/api/v1/paths')
       .then(response => {
         this.paths = response.data;
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
+    },
+    fetchApis: function() {
+      axios.get('/api/v1/search_apis')
+      .then(response => {
+        this.apis = response.data;
+        this.api = this.apis[0].name;
       })
       .catch(e => {
         this.errors.push(e)
@@ -176,12 +163,11 @@ export default {
         this.errors.push(e)
       })
     },
-    doSearch: function() {
+    onSearch: function() {
       this.searching = true;
-      axios.get('/api/v1/search?q=' + this.search)
+      axios.get('/api/v1/search?api=' + this.api + '&q=' + this.search)
       .then(response => {
-        this.results = response.data.data.movies;
-        this.website = response.data.website;
+        this.results = response.data.torrents;
       })
       .catch(e => {
         this.errors.push(e)
@@ -191,9 +177,9 @@ export default {
         this.search = null;
       })
     },
-    addTorrent: function(torrent) {
+    onResultClick: function(result) {
       axios.post('/api/v1/torrent', {
-        magnet: torrent.magnet
+        magnet: result.magnet
       })
       .then(response => {
         console.log(response);

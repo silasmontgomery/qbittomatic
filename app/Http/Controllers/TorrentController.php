@@ -131,10 +131,24 @@ class TorrentController extends Controller
      */
     public function search(Request $request): JsonResponse
     {
-        $api = new SearchApi('https://yts.ae');
-        $results = json_decode($api->torrentSearch($request->q), true);
+        $request->page ? $page = $request->page : $page = 1;
+        $request->limit ? $limit = $request->limit : $limit = 100;
 
-        return response()->json($results);
+        $apis = $this->getApis();
+        $namespace = null;
+        foreach ($apis as $api) {
+            if ($api['name'] == $request->api) {
+                $namespace = $api['namespace'] . '\Api';
+            }
+        }
+
+        if (empty($namespace)) {
+            die("Search API not found.");
+        }
+
+        $api = new $namespace;
+
+        return response()->json($api->search($request->q, $page, $limit));
     }
     
     /**
@@ -159,6 +173,45 @@ class TorrentController extends Controller
         return response()->json($this->getPaths());
     }
 
+    /**
+     * Return the list of torrent APIs from .env
+     *
+     * @return JsonResponse
+     */
+    public function searchApis(): JsonResponse
+    {
+        return response()->json($this->getApis());
+    }
+
+    /**
+     * Return the list of search APIs from .env
+     *
+     * @return Array
+     */
+    private function getApis(): Array
+    {
+        $api_check = explode(',', env('TORRENT_SEARCH_APIS'))[0];
+        if (empty($api_check) || count(explode('=', $api_check)) < 2) {
+            die('Missing .env variable TORRENT_SEARCH_APIS (ex: TORRENT_SEARCH_APIS=Name1=namespace1,Name2=namespace2');
+        }
+        
+        $apis = explode(',', env('TORRENT_SEARCH_APIS'));
+        $api_arr = [];
+        foreach ($apis as $api) {
+            if (!empty($api)) {
+                list($k, $v) = explode('=', $api);
+                $api_arr[] = ['name' => $k, 'namespace' => $v];
+            }
+        }
+
+        return $api_arr;
+    }
+
+    /**
+     * Return the list of torrent paths from .env
+     *
+     * @return Array
+     */
     private function getPaths(): array
     {
         $path_check = explode(',', env('TORRENT_PATHS'))[0];
