@@ -65,10 +65,12 @@
             </thead>
             <tbody>
               <tr v-for="result in results" :key="result.id">
-                <td class="nowrap">{{ result.title }}</td>
+                <td class="nowrap">
+                  <p>{{ result.title }}</p>
+                  <em>{{ result.genres.join(', ')}}</em>
+                </td>
                 <td class="text-lighter">
                   <p>{{ result.summary }}</p>
-                  <em>{{ result.genres.join(', ')}}</em>
                 </td>
                 <td>{{ result.language }}</td>
                 <td>{{ result.year }}</td>

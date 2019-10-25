@@ -82,6 +82,7 @@ class TorrentController extends Controller
                 $torrent = $one;
             }
         }
+        
         if (!$torrent) {
             die('Torrent not found.');
         }

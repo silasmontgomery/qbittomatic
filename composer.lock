@@ -1974,12 +1974,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silasmontgomery/qbittorrent-web-api-wrapper.git",
-                "reference": "18c84ba0ba0c147b2a753316137d05a913268070"
+                "reference": "cb5e64d5999d96f893943e01fa9d9e279b8cdc61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api-wrapper/zipball/18c84ba0ba0c147b2a753316137d05a913268070",
-                "reference": "18c84ba0ba0c147b2a753316137d05a913268070",
+                "url": "https://api.github.com/repos/silasmontgomery/qbittorrent-web-api-wrapper/zipball/cb5e64d5999d96f893943e01fa9d9e279b8cdc61",
+                "reference": "cb5e64d5999d96f893943e01fa9d9e279b8cdc61",
                 "shasum": ""
             },
             "require": {
@@ -2005,7 +2005,7 @@
                 }
             ],
             "description": "An API wrapper for the QBittorrent web API.",
-            "time": "2019-10-24T17:35:39+00:00"
+            "time": "2019-10-24T21:25:59+00:00"
         },
         {
             "name": "silasmontgomery/yts-api-wrapper",
@@ -2013,7 +2013,7 @@
             "dist": {
                 "type": "path",
                 "url": "/home/smontgomery/Projects/yts-api-wrapper",
-                "reference": "7f2beb57becfea6bbb0ce1146b30e1c590d24ff3"
+                "reference": "d0e30f7628f0378cc213c5de321ef8f8c45f0ce1"
             },
             "require": {
                 "curl/curl": "^2.2"
@@ -2036,7 +2036,7 @@
                     "email": "nomsalis@reticent.net"
                 }
             ],
-            "description": "An API wrapper for YTS torrent search API",
+            "description": "An API wrapper for the YTS torrent search API",
             "transport-options": {
                 "symlink": true
             }
