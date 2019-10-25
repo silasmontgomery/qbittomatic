@@ -5,3 +5,5 @@ Homestead.yaml
 .env
 node_modules
 /npm-debug.log
+*.sqlite
+*.sqlite3
