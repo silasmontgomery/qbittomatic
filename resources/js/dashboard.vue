@@ -29,10 +29,10 @@
                 <th>Name</th>
                 <th>Status</th>
                 <th>Size</th>
-                <th>% Complete</th>
-                <th>DL Speed</th>
-                <th>UL Speed</th>
-                <th>Share Ratio</th>
+                <th class="nowrap">% Complete</th>
+                <th class="nowrap">DL Speed</th>
+                <th class="nowrap">UL Speed</th>
+                <th class="nowrap">Share Ratio</th>
               </tr>
             </thead>
             <tbody ref="torrentTable">
@@ -87,7 +87,7 @@
             <tbody>
               <tr v-for="result in results" :key="result.id" class="selectable" @click="onResultClick(result)">
                 <td class="nowrap">{{ result.title }}</td>
-                <td>{{ result.size }}</td>
+                <td class="nowrap">{{ result.size }}</td>
                 <td>{{ result.seeds }}</td>
                 <td>{{ result.peers }}</td>
                 <td></td>
