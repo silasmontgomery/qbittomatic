@@ -36,23 +36,25 @@ class AuthController extends Controller
      * @param  \App\User   $user
      * @return mixed
      */
-    public function authenticate(Request $request, User $user)
+    public function authenticate(Request $request)
     {
         $this->validate($request, [
             'email'     => 'required|email|exists:users,email',
             'password'  => 'required'
         ]);
 
+        // Find the user by email
+        $user = User::where('email', $request->email)->first();
+
         // Verify the password and generate the token
-        if (Hash::check($request->password, $user->password)) {
+        if (Hash::check($request->input('password'), $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user)
             ], 200);
         }
-
         // Bad Request response
         return response()->json([
-            'password' => ['The password is incorrect.']
+            'password' => ['The password is invalid.']
         ], 400);
     }
 }
