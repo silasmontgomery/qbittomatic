@@ -1494,7 +1494,7 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/axios/node_modules/is-buffer/index.js");
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -1829,28 +1829,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/axios/node_modules/is-buffer/index.js":
-/*!************************************************************!*\
-  !*** ./node_modules/axios/node_modules/is-buffer/index.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/dashboard.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/dashboard.vue?vue&type=script&lang=js& ***!
@@ -2148,6 +2126,28 @@ __webpack_require__.r(__webpack_exports__);
   computed: {},
   methods: {}
 });
+
+/***/ }),
+
+/***/ "./node_modules/is-buffer/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/is-buffer/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
 
 /***/ }),
 
@@ -2987,7 +2987,9 @@ var render = function() {
                               _vm._v(_vm._s(result.title))
                             ]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(result.size))]),
+                            _c("td", { staticClass: "nowrap" }, [
+                              _vm._v(_vm._s(result.size))
+                            ]),
                             _vm._v(" "),
                             _c("td", [_vm._v(_vm._s(result.seeds))]),
                             _vm._v(" "),
@@ -3020,13 +3022,13 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Size")]),
         _vm._v(" "),
-        _c("th", [_vm._v("% Complete")]),
+        _c("th", { staticClass: "nowrap" }, [_vm._v("% Complete")]),
         _vm._v(" "),
-        _c("th", [_vm._v("DL Speed")]),
+        _c("th", { staticClass: "nowrap" }, [_vm._v("DL Speed")]),
         _vm._v(" "),
-        _c("th", [_vm._v("UL Speed")]),
+        _c("th", { staticClass: "nowrap" }, [_vm._v("UL Speed")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Share Ratio")])
+        _c("th", { staticClass: "nowrap" }, [_vm._v("Share Ratio")])
       ])
     ])
   },
