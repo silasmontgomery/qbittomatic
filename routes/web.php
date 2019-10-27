@@ -13,8 +13,6 @@
 
 // API Routes
 
-use App\Http\Controllers\TorrentController;
-
 $router->group(['prefix' => 'api'], function ($router) {
     $router->group(['prefix' => 'v1'], function ($router) {
         // Auth routes

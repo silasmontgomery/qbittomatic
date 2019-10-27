@@ -1963,7 +1963,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.baseURL = this.baseURL;
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common['Auth-Token'] = this.token;
   },
   computed: {},
   methods: {

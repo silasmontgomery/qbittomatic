@@ -123,7 +123,6 @@ export default {
   },
   mounted() {
     axios.defaults.baseURL = this.baseURL;
-    axios.defaults.headers.common['Auth-Token'] = this.token;
   },
   computed: {
   },
