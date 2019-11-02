@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Firebase\JWT\JWT;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ class AuthController extends Controller
      * @param  \App\User   $user
      * @return string
      */
-    protected function jwt(User $user)
+    protected function jwt(User $user): string
     {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
@@ -34,9 +33,9 @@ class AuthController extends Controller
      *
      * @param Request   $request
      * @param  \App\User   $user
-     * @return mixed
+     * @return JsonResponse
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): JsonResponse
     {
         $this->validate($request, [
             'email'     => 'required|email|exists:users,email',
@@ -47,7 +46,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         // Verify the password and generate the token
-        if (Hash::check($request->input('password'), $user->password)) {
+        if (Hash::check($request->password, $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user)
             ], 200);
