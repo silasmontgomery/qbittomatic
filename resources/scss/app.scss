@@ -1,6 +1,9 @@
 body {
     padding: 0;
+    margin: 0;
     background-color: #efefef;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
 }
 table {
     width: 100%;
@@ -63,16 +66,14 @@ p {
     margin: 0px 0px 10px 0px;
 }
 #app {
-    padding: 20px;
-}
-#menu {
-    background-color: #333;
-    color: #fff;
     padding: 10px;
 }
 .login-form {
     max-width: 300px;
     margin: auto;
+}
+.login-form input {
+    width: 100%;
 }
 .hidden {
     display: none;
@@ -83,6 +84,9 @@ p {
 }
 .col {
     flex-grow: 1;
+}
+.p-5 {
+    padding: 5px;
 }
 .mt-5 {
     margin-top: 5px;
