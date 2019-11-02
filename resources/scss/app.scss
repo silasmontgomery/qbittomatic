@@ -20,6 +20,9 @@ th, td {
     vertical-align: top;
     padding: 5px;
 }
+th {
+    white-space: nowrap;
+}
 tr.selectable:hover {
     background-color: #fffdce;
     cursor: pointer;
