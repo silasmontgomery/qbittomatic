@@ -36,7 +36,8 @@ export default {
       })
       .then(response => {
         let token = response.data.token;
-        this.$emit('login', token);
+        let user = response.data.user;
+        this.$emit('login', { token: token, user: user });
       })
       .catch(e => {
         this.errors = e.response.data;

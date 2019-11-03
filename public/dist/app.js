@@ -1494,7 +1494,7 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/axios/node_modules/is-buffer/index.js");
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -1829,28 +1829,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/axios/node_modules/is-buffer/index.js":
-/*!************************************************************!*\
-  !*** ./node_modules/axios/node_modules/is-buffer/index.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/menu.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/menu.vue?vue&type=script&lang=js& ***!
@@ -1867,8 +1845,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
+    user: {
+      type: Object,
+      required: true
+    },
     loggedIn: {
       type: Boolean,
       "default": false
@@ -1914,8 +1898,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     // Get token saved as cookie
-    if (this.$cookies.isKey('token') && this.$cookies.get('token')) {
-      this.doLogin(this.$cookies.get('token'));
+    if (this.$cookies.isKey('token') && this.$cookies.get('token') && this.$cookies.isKey('user') && this.$cookies.get('user')) {
+      this.doLogin({
+        token: this.$cookies.get('token'),
+        user: this.$cookies.get('user')
+      });
     } else {
       if (this.$route.name != 'login') {
         this.$router.push('/login');
@@ -1924,10 +1911,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {},
   methods: {
-    doLogin: function doLogin(token) {
-      this.$cookies.set('token', token);
-      axios.defaults.headers.common['Auth-Token'] = token;
+    doLogin: function doLogin(data) {
+      this.$cookies.set('token', data.token);
+      this.$cookies.set('user', data.user);
+      axios.defaults.headers.common['Auth-Token'] = data.token;
       this.loggedIn = true;
+      this.user = data.user;
 
       if (this.$route.name != 'dashboard') {
         this.$router.push('/dashboard');
@@ -2241,14 +2230,40 @@ __webpack_require__.r(__webpack_exports__);
         password: this.password
       }).then(function (response) {
         var token = response.data.token;
+        var user = response.data.user;
 
-        _this.$emit('login', token);
+        _this.$emit('login', {
+          token: token,
+          user: user
+        });
       })["catch"](function (e) {
         _this.errors = e.response.data;
       });
     }
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/is-buffer/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/is-buffer/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
 
 /***/ }),
 
@@ -2865,19 +2880,21 @@ var render = function() {
     _c("div", { staticClass: "col text-left bold" }, [_vm._v("qBittomatic")]),
     _vm._v(" "),
     _c("div", { staticClass: "col text-right" }, [
-      _c(
-        "a",
-        {
-          attrs: { href: "#" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              return _vm.doLogout($event)
+      _c("div", [
+        _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.doLogout($event)
+              }
             }
-          }
-        },
-        [_vm._v("Logout")]
-      )
+          },
+          [_vm._v("Logout "), _c("span", { staticClass: "chevron bottom" })]
+        )
+      ])
     ])
   ])
 }
@@ -2907,7 +2924,10 @@ var render = function() {
     "div",
     [
       _vm.loggedIn
-        ? _c("menu-component", { on: { logout: _vm.doLogout } })
+        ? _c("menu-component", {
+            attrs: { user: _vm.user },
+            on: { logout: _vm.doLogout }
+          })
         : _vm._e(),
       _vm._v(" "),
       _c("router-view", {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use silasmontgomery\QBittorrentWebApi\Api;
-use silasmontgomery\YtsApi\Api as SearchApi;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Http\Request;
 

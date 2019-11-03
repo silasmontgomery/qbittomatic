@@ -48,7 +48,10 @@ class AuthController extends Controller
         // Verify the password and generate the token
         if (Hash::check($request->password, $user->password)) {
             return response()->json([
-                'token' => $this->jwt($user)
+                'token' => $this->jwt($user),
+                'user' => [
+                    'email' => $request->email
+                ]
             ], 200);
         }
         // Bad Request response

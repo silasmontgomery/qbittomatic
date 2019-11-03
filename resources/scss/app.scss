@@ -68,6 +68,10 @@ button:hover {
 p {
     margin: 0px 0px 10px 0px;
 }
+a, a:visited {
+    text-decoration: none;
+    color: rgb(86, 133, 67);
+}
 #app {
     padding: 10px;
 }
@@ -142,4 +146,21 @@ p {
 .form-error {
     color: rgb(170, 38, 38);
     font-size: .9em;
+}
+.chevron::before {
+	border-style: solid;
+	border-width: 0.2em 0.2em 0 0;
+	content: '';
+	display: inline-block;
+	height: 0.45em;
+	left: 0.15em;
+	position: relative;
+	top: 0.15em;
+	transform: rotate(-45deg);
+	vertical-align: top;
+	width: 0.45em;
+}
+.chevron.bottom:before {
+	top: 0;
+	transform: rotate(135deg);
 }
