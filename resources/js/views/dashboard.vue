@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="bg-white shadow-md rounded p-5 mb-4">
+    <div class="bg-white shadow-md rounded p-5 mb-2">
       <div>
-        <table class="table-auto responsive hover text-left w-full">
+        <table class="table-auto text-left w-full">
           <thead>
             <tr>
               <th>Name</th>
@@ -25,17 +25,17 @@
                 <td>{{ smartSize(torrent.up_speed) }}/s</td>
                 <td>{{ torrent.ratio.toFixed(2) }}</td>
               </tr>
-              <tr :ref="torrent.hash" class="torrent-details hidden" :key="torrent.hash + 'B'">
+              <tr :ref="torrent.hash" class="odd:bg-gray-200 hidden" :key="torrent.hash + 'B'">
                 <td colspan="7">
-                  <div class="row">
-                    <div class="col">
+                  <div class="flex flex-row">
+                    <div class="flex-grow">
                       Current Folder: 
-                      <select v-model="torrent.path" @change="onPathChange(torrent)">
+                      <select v-model="torrent.path" @change="onPathChange(torrent)" class="form-select focus:outline-none focus:bg-white focus:border-gray-500">
                         <option v-for="path in paths" :key="path.name">{{ path.name }}</option>
                       </select>
                     </div>
-                    <div class="col text-right">
-                      <button @click="onRemoveTorrentClick(torrent)">Remove Torrent</button> <input id="deleteFiles" type="checkbox" value="1" class="ml-5" @change="onDeleteFilesChange(torrent)" /> <label for="deleteFiles">Delete files</label>
+                    <div class="flex-grow text-right">
+                      <button class="btn btn-blue" @click="onRemoveTorrentClick(torrent)">Remove Torrent</button> <input id="deleteFiles" type="checkbox" value="1" class="ml-5" @change="onDeleteFilesChange(torrent)" /> <label for="deleteFiles">Delete files</label>
                     </div>
                   </div>
                 </td>
@@ -48,12 +48,15 @@
         </table>
       </div>
     </div>
-    <div class="text-right mt-10">
-      <span v-if="searching">Searching...</span> <select v-model="api"><option v-for="api in apis" :key="api.name">{{ api.name }}</option></select> <input type="text" v-model="search" @focus="search=null" v-on:keyup.enter="onSearch" placeholder="Torrent search" /> <button class="ml-5" @click="onSearch">Search</button>
+    <div class="text-right">
+      <span v-if="searching">Searching...</span>
+      <div class="inline-block bg-white shadow-md rounded px-3 py-3 mb-4">
+        <select v-model="api" class="form-select"><option v-for="api in apis" :key="api.name">{{ api.name }}</option></select> <input type="text" v-model="search" @focus="search=null" v-on:keyup.enter="onSearch" placeholder="Torrent search" class="form-input" /> <button class="btn btn-blue" @click="onSearch">Search</button>
+      </div>
     </div>
     <div v-if="results && results.length > 0" class="card mt-10">
-      <div class="responsive">
-        <table>
+      <div class="bg-white shadow-md rounded p-5 mb-2">
+        <table class="table-auto w-full text-left">
           <thead>
             <tr>
               <th>Title</th>
@@ -64,7 +67,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="result in results" :key="result.id" class="selectable" @click="onResultClick(result)">
+            <tr v-for="result in results" :key="result.id" class="odd:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="onResultClick(result)">
               <td class="nowrap">{{ result.title }}</td>
               <td>{{ result.size }}</td>
               <td>{{ result.seeds }}</td>

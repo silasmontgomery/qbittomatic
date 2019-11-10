@@ -11803,20 +11803,53 @@ video {
   z-index: auto;
 }
 
-.text-input {
+.form-input {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
   border-width: 1px;
   border-radius: 0.25rem;
-  width: 100%;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   color: #4a5568;
   line-height: 1.25;
+}
+
+.form-select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: #edf2f7;
+  border-width: 1px;
+  border-color: #edf2f7;
+  color: #2d3748;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.25rem;
+  line-height: 1.25;
+}
+
+.btn {
+  font-weight: 700;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.btn-blue {
+  background-color: #4299e1;
+  color: #fff;
+}
+
+.btn-blue:hover {
+  background-color: #2b6cb0;
 }
 
 table th, table td {
