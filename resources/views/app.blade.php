@@ -7,7 +7,7 @@
     <title>qBittomatic</title>
     <link rel="stylesheet" href="dist/app.css" />
 </head>
-<body>
+<body class="bg-gray-200">
     <menu-component></menu-component>
     <div id="app">
         <app></app>

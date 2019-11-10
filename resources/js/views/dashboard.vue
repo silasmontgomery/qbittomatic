@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="card">
-      <div class="responsive">
-        <table>
+    <div class="bg-white shadow-md rounded p-5 mb-4">
+      <div>
+        <table class="table-auto responsive hover text-left w-full">
           <thead>
             <tr>
               <th>Name</th>
@@ -14,9 +14,9 @@
               <th>Share Ratio</th>
             </tr>
           </thead>
-          <tbody ref="torrentTable">
+          <tbody>
             <template v-for="torrent in torrents">
-              <tr class="selectable" @click="onTorrentClick(torrent)" :key="torrent.hash + 'A'">
+              <tr class="odd:bg-gray-200 hover:cursor-pointer hover:bg-gray-300" @click="onTorrentClick(torrent)" :key="torrent.hash + 'A'">
                 <td class="nowrap">{{ torrent.name }}</td>
                 <td>{{ torrent.state }}</td>
                 <td>{{ smartSize(torrent.size) }}</td>

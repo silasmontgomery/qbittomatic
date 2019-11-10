@@ -1888,6 +1888,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2207,6 +2209,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     loggedIn: {
@@ -2220,6 +2242,9 @@ __webpack_require__.r(__webpack_exports__);
       password: null,
       errors: []
     };
+  },
+  mounted: function mounted() {
+    this.$refs.email.focus();
   },
   methods: {
     doLogin: function doLogin() {
@@ -2238,6 +2263,7 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (e) {
         _this.errors = e.response.data;
+        console.log(_this.errors);
       });
     }
   }
@@ -2930,10 +2956,17 @@ var render = function() {
           })
         : _vm._e(),
       _vm._v(" "),
-      _c("router-view", {
-        attrs: { loggedIn: _vm.loggedIn },
-        on: { login: _vm.doLogin }
-      })
+      _c(
+        "div",
+        { staticClass: "container" },
+        [
+          _c("router-view", {
+            attrs: { loggedIn: _vm.loggedIn },
+            on: { login: _vm.doLogin }
+          })
+        ],
+        1
+      )
     ],
     1
   )
@@ -2961,165 +2994,169 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "responsive" }, [
-        _c("table", [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            { ref: "torrentTable" },
-            [
-              _vm._l(_vm.torrents, function(torrent) {
-                return [
-                  _c(
-                    "tr",
-                    {
-                      key: torrent.hash + "A",
-                      staticClass: "selectable",
-                      on: {
-                        click: function($event) {
-                          return _vm.onTorrentClick(torrent)
+    _c("div", { staticClass: "bg-white shadow-md rounded p-5 mb-4" }, [
+      _c("div", [
+        _c(
+          "table",
+          { staticClass: "table-auto responsive hover text-left w-full" },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              [
+                _vm._l(_vm.torrents, function(torrent) {
+                  return [
+                    _c(
+                      "tr",
+                      {
+                        key: torrent.hash + "A",
+                        staticClass:
+                          "odd:bg-gray-200 hover:cursor-pointer hover:bg-gray-300",
+                        on: {
+                          click: function($event) {
+                            return _vm.onTorrentClick(torrent)
+                          }
                         }
-                      }
-                    },
-                    [
-                      _c("td", { staticClass: "nowrap" }, [
-                        _vm._v(_vm._s(torrent.name))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(torrent.state))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(_vm.smartSize(torrent.size)))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(torrent.completed.toFixed(2)) + "%")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.dl_speed)) + "/s")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.smartSize(torrent.up_speed)) + "/s")
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(torrent.ratio.toFixed(2)))])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "tr",
-                    {
-                      key: torrent.hash + "B",
-                      ref: torrent.hash,
-                      refInFor: true,
-                      staticClass: "torrent-details hidden"
-                    },
-                    [
-                      _c("td", { attrs: { colspan: "7" } }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v(
-                              "\n                    Current Folder: \n                    "
-                            ),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: torrent.path,
-                                    expression: "torrent.path"
-                                  }
-                                ],
-                                on: {
-                                  change: [
-                                    function($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call($event.target.options, function(
-                                          o
-                                        ) {
-                                          return o.selected
-                                        })
-                                        .map(function(o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        torrent,
-                                        "path",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
-                                    },
-                                    function($event) {
-                                      return _vm.onPathChange(torrent)
+                      },
+                      [
+                        _c("td", { staticClass: "nowrap" }, [
+                          _vm._v(_vm._s(torrent.name))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(torrent.state))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.smartSize(torrent.size)))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(torrent.completed.toFixed(2)) + "%")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm.smartSize(torrent.dl_speed)) + "/s")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm.smartSize(torrent.up_speed)) + "/s")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(torrent.ratio.toFixed(2)))])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "tr",
+                      {
+                        key: torrent.hash + "B",
+                        ref: torrent.hash,
+                        refInFor: true,
+                        staticClass: "torrent-details hidden"
+                      },
+                      [
+                        _c("td", { attrs: { colspan: "7" } }, [
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col" }, [
+                              _vm._v(
+                                "\n                    Current Folder: \n                    "
+                              ),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: torrent.path,
+                                      expression: "torrent.path"
                                     }
-                                  ]
-                                }
-                              },
-                              _vm._l(_vm.paths, function(path) {
-                                return _c("option", { key: path.name }, [
-                                  _vm._v(_vm._s(path.name))
-                                ])
-                              }),
-                              0
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col text-right" }, [
-                            _c(
-                              "button",
-                              {
+                                  ],
+                                  on: {
+                                    change: [
+                                      function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.$set(
+                                          torrent,
+                                          "path",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
+                                      },
+                                      function($event) {
+                                        return _vm.onPathChange(torrent)
+                                      }
+                                    ]
+                                  }
+                                },
+                                _vm._l(_vm.paths, function(path) {
+                                  return _c("option", { key: path.name }, [
+                                    _vm._v(_vm._s(path.name))
+                                  ])
+                                }),
+                                0
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col text-right" }, [
+                              _c(
+                                "button",
+                                {
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.onRemoveTorrentClick(torrent)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Remove Torrent")]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                staticClass: "ml-5",
+                                attrs: {
+                                  id: "deleteFiles",
+                                  type: "checkbox",
+                                  value: "1"
+                                },
                                 on: {
-                                  click: function($event) {
-                                    return _vm.onRemoveTorrentClick(torrent)
+                                  change: function($event) {
+                                    return _vm.onDeleteFilesChange(torrent)
                                   }
                                 }
-                              },
-                              [_vm._v("Remove Torrent")]
-                            ),
-                            _vm._v(" "),
-                            _c("input", {
-                              staticClass: "ml-5",
-                              attrs: {
-                                id: "deleteFiles",
-                                type: "checkbox",
-                                value: "1"
-                              },
-                              on: {
-                                change: function($event) {
-                                  return _vm.onDeleteFilesChange(torrent)
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("label", { attrs: { for: "deleteFiles" } }, [
-                              _vm._v("Delete files")
+                              }),
+                              _vm._v(" "),
+                              _c("label", { attrs: { for: "deleteFiles" } }, [
+                                _vm._v("Delete files")
+                              ])
                             ])
                           ])
                         ])
+                      ]
+                    )
+                  ]
+                }),
+                _vm._v(" "),
+                _vm.torrents.length == 0
+                  ? _c("tr", [
+                      _c("td", { attrs: { colspan: "7" } }, [
+                        _vm._v("No active torrents")
                       ])
-                    ]
-                  )
-                ]
-              }),
-              _vm._v(" "),
-              _vm.torrents.length == 0
-                ? _c("tr", [
-                    _c("td", { attrs: { colspan: "7" } }, [
-                      _vm._v("No active torrents")
                     ])
-                  ])
-                : _vm._e()
-            ],
-            2
-          )
-        ])
+                  : _vm._e()
+              ],
+              2
+            )
+          ]
+        )
       ])
     ]),
     _vm._v(" "),
@@ -3303,77 +3340,133 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "login-form" }, [
-    _c("h3", [_vm._v("qBittomatic")]),
+  return _c("div", { staticClass: "mt-10 mx-auto w-full max-w-xs" }, [
+    _c(
+      "p",
+      { staticClass: "font-sans text-2xl text-gray-600 text-center mb-2" },
+      [_vm._v("\n    qBittomatic\n  ")]
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "mb-10" }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.email,
-            expression: "email"
-          }
-        ],
-        attrs: { type: "text", placeholder: "email address" },
-        domProps: { value: _vm.email },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+    _c(
+      "form",
+      { staticClass: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" },
+      [
+        _c("div", { staticClass: "mb-4" }, [
+          _c(
+            "label",
+            {
+              staticClass: "block text-gray-700 text-sm font-bold mb-2",
+              attrs: { for: "email" }
+            },
+            [_vm._v("\n        Email\n      ")]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.email,
+                expression: "email"
+              }
+            ],
+            ref: "email",
+            staticClass: "text-input focus:outline-none focus:shadow-outline",
+            attrs: { type: "text", placeholder: "email address" },
+            domProps: { value: _vm.email },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.email = $event.target.value
+              }
             }
-            _vm.email = $event.target.value
-          }
-        }
-      }),
-      _vm._v(" "),
-      _vm.errors.email
-        ? _c("div", { staticClass: "form-error mt-5" }, [
-            _vm._v(_vm._s(_vm.errors.email[0]))
-          ])
-        : _vm._e()
-    ]),
+          }),
+          _vm._v(" "),
+          _vm.errors.email
+            ? _c("p", { staticClass: "text-red-500 text-xs italic my-3" }, [
+                _vm._v(_vm._s(_vm.errors.email[0]))
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "mb-6" }, [
+          _c(
+            "label",
+            {
+              staticClass: "block text-gray-700 text-sm font-bold mb-2",
+              attrs: { for: "password" }
+            },
+            [_vm._v("\n        Password\n      ")]
+          ),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.password,
+                expression: "password"
+              }
+            ],
+            staticClass: "text-input focus:outline-none focus:shadow-outline",
+            attrs: { type: "password", placeholder: "********" },
+            domProps: { value: _vm.password },
+            on: {
+              keypress: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                return _vm.doLogin($event)
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.password = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm.errors.password
+            ? _c("p", { staticClass: "text-red-500 text-xs italic my-3" }, [
+                _vm._v(_vm._s(_vm.errors.password[0]))
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex items-center justify-between" }, [
+          _c(
+            "button",
+            {
+              staticClass:
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+              attrs: { type: "button" },
+              on: { click: _vm.doLogin }
+            },
+            [_vm._v("\n        Sign In\n      ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "a",
+            {
+              staticClass:
+                "inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800",
+              attrs: { href: "#" }
+            },
+            [_vm._v("\n        Forgot Password?\n      ")]
+          )
+        ])
+      ]
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "mb-10" }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.password,
-            expression: "password"
-          }
-        ],
-        attrs: { type: "password", placeholder: "password" },
-        domProps: { value: _vm.password },
-        on: {
-          keyup: function($event) {
-            if (
-              !$event.type.indexOf("key") &&
-              _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-            ) {
-              return null
-            }
-            return _vm.doLogin($event)
-          },
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.password = $event.target.value
-          }
-        }
-      }),
-      _vm._v(" "),
-      _vm.errors.password
-        ? _c("div", { staticClass: "form-error mt-5" }, [
-            _vm._v(_vm._s(_vm.errors.password[0]))
-          ])
-        : _vm._e()
-    ]),
-    _vm._v(" "),
-    _c("div", [_c("button", { on: { click: _vm.doLogin } }, [_vm._v("Login")])])
+    _c("p", { staticClass: "text-center text-gray-500 text-xs" }, [
+      _vm._v("\n    © 2019 qBittomatic. All rights reserved.\n  ")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -18381,6 +18474,17 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./resources/css/app.css":
+/*!*******************************!*\
+  !*** ./resources/css/app.css ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -18719,26 +18823,15 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/scss/app.scss":
-/*!*********************************!*\
-  !*** ./resources/scss/app.scss ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ 0:
-/*!*************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/scss/app.scss ***!
-  \*************************************************************/
+/*!***********************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/css/app.css ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /var/www/qbittomatic/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/qbittomatic/resources/scss/app.scss */"./resources/scss/app.scss");
+module.exports = __webpack_require__(/*! /var/www/qbittomatic/resources/css/app.css */"./resources/css/app.css");
 
 
 /***/ })
