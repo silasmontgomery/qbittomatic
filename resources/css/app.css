@@ -19,7 +19,9 @@
 .btn-blue:hover {
     @apply bg-blue-700;
 }
-
 table th, table td {
     padding: 5px 10px 5px 10px;
+}
+table th {
+    white-space: nowrap;
 }
