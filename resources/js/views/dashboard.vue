@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="bg-white shadow-md rounded p-5 mb-2">
-      <div>
+      <div class="scrolling-touch overflow-auto">
         <table class="table-auto text-left w-full">
           <thead>
             <tr>
@@ -54,8 +54,8 @@
         <select v-model="api" class="form-select"><option v-for="api in apis" :key="api.name">{{ api.name }}</option></select> <input type="text" v-model="search" @focus="search=null" v-on:keyup.enter="onSearch" placeholder="Torrent search" class="form-input" /> <button class="btn btn-blue" @click="onSearch">Search</button>
       </div>
     </div>
-    <div v-if="results && results.length > 0" class="card mt-10">
-      <div class="bg-white shadow-md rounded p-5 mb-2">
+    <div v-if="results && results.length > 0" class="bg-white shadow-md rounded p-5 mb-2">
+      <div class="scrolling-touch overflow-auto">
         <table class="table-auto w-full text-left">
           <thead>
             <tr>
