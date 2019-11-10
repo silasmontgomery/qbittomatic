@@ -1,8 +1,8 @@
 <template>
-  <div class="row p-5">
-    <div class="col text-left bold">qBittomatic</div>
-    <div class="col text-right">
-      <div><a href="#" @click.prevent="doLogout">Logout <span class="chevron bottom"></span></a></div>
+  <div class="flex m-3">
+    <div class="flex-grow text-gray-600 text-xl">qBittomatic</div>
+    <div class="flex-grow text-right">
+      <div><a href="#" class="text-blue-500 hover:text-blue-800" @click.prevent="doLogout">Logout <span class="chevron bottom"></span></a></div>
     </div>
   </div>
 </template>

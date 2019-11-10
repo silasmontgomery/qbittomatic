@@ -1,7 +1,7 @@
 <template>
   <div>
-    <menu-component v-if="loggedIn" :user="user" @logout="doLogout"></menu-component>
     <div class="container">
+      <menu-component v-if="loggedIn" :user="user" @logout="doLogout"></menu-component>
       <router-view :loggedIn="loggedIn" @login="doLogin"></router-view>
     </div>
   </div>
