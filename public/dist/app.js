@@ -3233,12 +3233,7 @@ var render = function() {
         _c(
           "button",
           { staticClass: "btn btn-blue", on: { click: _vm.onSearch } },
-          [
-            _vm.searching
-              ? _c("img", { attrs: { src: "/img/gear.gif" } })
-              : _vm._e(),
-            _vm._v(" Search")
-          ]
+          [_vm._v("Search")]
         )
       ]
     ),
